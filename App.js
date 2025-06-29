@@ -8,7 +8,7 @@ import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import AppNavigator from './navigators/AppNavigator';
 import { View, ActivityIndicator } from 'react-native';
-
+import './services/locationTask';
 const Stack = createStackNavigator();
 
 // This component decides which navigator to show
