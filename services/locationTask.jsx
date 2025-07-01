@@ -5,6 +5,15 @@ import api from '../utils/api';
 
 export const LOCATION_TASK_NAME = 'background-location-task';
 
+const stopBackgroundTracking = async () => {
+    const isTracking = await TaskManager.isTaskRegisteredAsync(LOCATION_TASK_NAME);
+    if (isTracking) {
+        await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+        await AsyncStorage.removeItem('activeTicketId');
+        console.log("Background location tracking has been stopped automatically.");
+    }
+};
+
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   if (error) {
     console.error('❌ Background location task error:', error.message);
@@ -17,30 +26,36 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data, error }) => {
   }
 
   const location = data.locations[0];
-  const { latitude, longitude, accuracy, altitude, speed, heading } = location.coords;
-
-  console.log("📍 Background Location Update:");
-  console.log(`- Latitude: ${latitude}`);
-  console.log(`- Longitude: ${longitude}`);
-  console.log(`- Accuracy: ${accuracy} meters`);
-  console.log(`- Altitude: ${altitude}`);
-  console.log(`- Speed: ${speed}`);
-  console.log(`- Heading: ${heading}`);
+  const { latitude, longitude } = location.coords;
 
   try {
     const activeTicketId = await AsyncStorage.getItem('activeTicketId');
     if (!activeTicketId) {
-      console.warn('⚠️ No activeTicketId in AsyncStorage.');
+      console.warn('⚠️ No activeTicketId in AsyncStorage, stopping task.');
+      await stopBackgroundTracking();
       return;
     }
 
-    console.log(`🚀 Sending location update: ${latitude}, ${longitude} for ticket ${activeTicketId}`);
+    // Verify ticket status with the backend
+    const response = await api.get(`/tickets/engineer/active-ticket`);
+    const currentActiveTicket = response.data;
 
+    if (!currentActiveTicket || currentActiveTicket._id !== activeTicketId) {
+        console.log(`Ticket ${activeTicketId} is no longer active. Stopping tracking.`);
+        await stopBackgroundTracking();
+        return;
+    }
+
+    console.log(`🚀 Sending location update: ${latitude}, ${longitude} for ticket ${activeTicketId}`);
     await api.post(`/tickets/engineer/location/${activeTicketId}`, {
       latitude,
       longitude,
     });
   } catch (err) {
-    console.error('❌ Failed to send location update:', err.message);
+    console.error('❌ Failed to process location update:', err.response?.data?.message || err.message);
+    // If the error indicates the ticket is not found or closed, stop tracking
+    if (err.response?.status === 404 || err.response?.status === 403) {
+        await stopBackgroundTracking();
+    }
   }
 });

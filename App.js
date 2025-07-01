@@ -28,7 +28,7 @@ const AppContent = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {token ? (
         // If a token exists, the user is logged in. Show the main app.
-        <Stack.Screen name="MainApp" component={AppNavigator}  />
+        <Stack.Screen name="AppNavigator" component={AppNavigator}  />
       ) : (
         // If no token, show the authentication screens.
         <>
