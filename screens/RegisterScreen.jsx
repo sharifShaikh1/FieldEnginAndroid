@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, ActivityInd
 import { NativeWindStyleSheet } from 'nativewind';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
+import API_BASE_URL from '../config/apiConfig';
 
 NativeWindStyleSheet.setOutput({
   default: 'native',
@@ -106,8 +107,8 @@ const handleRegister = async () => {
       addressProofFile: addressProofBase64
     };
 
-    const API_URL = 'http://192.168.1.241:8021';
-    const response = await fetch(`${API_URL}/api/auth/register`, {
+    
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

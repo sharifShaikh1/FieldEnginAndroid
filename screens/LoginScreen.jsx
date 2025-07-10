@@ -2,12 +2,13 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 import api, { setAuthToken } from '../utils/api';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Engineer'); // UI toggle
+  //const [role, setRole] = useState('Engineer'); // UI toggle
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
@@ -16,31 +17,24 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      // Use the central api instance, no need to specify the full URL
-      const response = await api.post('/auth/login', { email, password, role });
-      const { token, user } = response.data;
+      const response = await api.post('/auth/login', { email, password, role: 'Engineer'});
+      const { token,refreshToken, user } = response.data;
 
-      // Store the token and user data to keep the user logged in
-      await AsyncStorage.setItem('token', token);
+      await SecureStore.setItemAsync('token', token);
+      await SecureStore.setItemAsync('refreshToken',refreshToken);
       await AsyncStorage.setItem('user', JSON.stringify(user));
 
-      // Set the token in Axios headers for all future requests
       setAuthToken(token);
-
       setLoading(false);
 
-      // Check if the user needs to set a permanent password
+      // Navigate to AppNavigator regardless, with optional alert
       if (user.role === 'Engineer' && user.isPasswordTemporary) {
         Alert.alert(
           'Welcome & Action Required',
           'Login Successful! Please check your approval email for a link to set your permanent password.',
-          [{text: 'OK', onPress: () => navigation.replace('MainApp')}]
-          // Navigate to the home screen after the user dismisses the alert
+          [{ text: 'OK', onPress: () => navigation.replace('AppNavigator') }]
         );
-      } else {
-        // Navigate directly to the dashboard for Admins or returning Engineers
-        navigation.replace('MainApp');
-      }
+      } 
     } catch (err) {
       setLoading(false);
       const errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials.';
@@ -53,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
       <View>
         <Text className="text-4xl font-bold text-center text-white mb-2">Welcome Back</Text>
         <Text className="text-lg text-center text-gray-400 mb-10">Sign in to continue</Text>
-        
+
         <TextInput
           className="bg-gray-800 border border-gray-700 rounded-lg p-4 mb-4 text-white text-base"
           placeholder="Email"
@@ -72,15 +66,8 @@ const LoginScreen = ({ navigation }) => {
           secureTextEntry
         />
 
-        <View className="flex-row justify-between space-x-4 mb-6">
-            <TouchableOpacity onPress={() => setRole('Engineer')} className={`flex-1 p-4 rounded-lg items-center ${role === 'Engineer' ? 'bg-indigo-600' : 'bg-gray-700'}`}>
-                <Text className="text-white font-bold text-base">Engineer</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => setRole('Admin')} className={`flex-1 p-4 rounded-lg items-center ${role === 'Admin' ? 'bg-indigo-600' : 'bg-gray-700'}`}>
-                <Text className="text-white font-bold text-base">Admin</Text>
-            </TouchableOpacity>
-        </View>
         
+
         <TouchableOpacity
           className="bg-indigo-600 rounded-lg p-4"
           onPress={handleLogin}
