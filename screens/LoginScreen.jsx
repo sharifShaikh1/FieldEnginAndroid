@@ -1,15 +1,14 @@
 // screens/LoginScreen.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react'; // Import useContext
 import { View, Text, TextInput, TouchableOpacity, Alert, SafeAreaView, ActivityIndicator } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as SecureStore from 'expo-secure-store';
-import api, { setAuthToken } from '../utils/api';
+import api from '../utils/api';
+import { useAuth } from '../context/AuthContext'; // Import useAuth
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  //const [role, setRole] = useState('Engineer'); // UI toggle
   const [loading, setLoading] = useState(false);
+  const { login } = useAuth(); // Get the login function from context
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -17,28 +16,32 @@ const LoginScreen = ({ navigation }) => {
     }
     setLoading(true);
     try {
-      const response = await api.post('/auth/login', { email, password, role: 'Engineer'});
-      const { token,refreshToken, user } = response.data;
+      // The role is hardcoded to 'Engineer' as per the original code
+      const response = await api.post('/auth/login', { email, password, role: 'Engineer' });
+      
+      // The backend sends { token, user }
+      const { token, refreshToken, user } = response.data;
 
-      await SecureStore.setItemAsync('token', token);
-      await SecureStore.setItemAsync('refreshToken',refreshToken);
-      await AsyncStorage.setItem('user', JSON.stringify(user));
+      // Use the login function from AuthContext to set state globally
+      await login(user, token, refreshToken);
 
-      setAuthToken(token);
-      setLoading(false);
-
-      // Navigate to AppNavigator regardless, with optional alert
+      // Navigate after successful login and state update
+      // The navigation logic inside AppNavigator will handle the rest
       if (user.role === 'Engineer' && user.isPasswordTemporary) {
         Alert.alert(
           'Welcome & Action Required',
           'Login Successful! Please check your approval email for a link to set your permanent password.',
-          [{ text: 'OK', onPress: () => navigation.replace('AppNavigator') }]
+          [{ text: 'OK' }]
         );
-      } 
+      }
+      // No need to call navigation.replace here as the AppNavigator will now
+      // automatically show the correct screens because the user state is set.
+
     } catch (err) {
-      setLoading(false);
       const errorMessage = err.response?.data?.message || 'Login failed. Please check your credentials.';
       Alert.alert('Login Error', errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,8 +68,6 @@ const LoginScreen = ({ navigation }) => {
           onChangeText={setPassword}
           secureTextEntry
         />
-
-        
 
         <TouchableOpacity
           className="bg-indigo-600 rounded-lg p-4"

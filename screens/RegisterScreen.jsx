@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, ActivityIndicator } from 'react-native';
-import { NativeWindStyleSheet } from 'nativewind';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import API_BASE_URL from '../config/apiConfig';
 
-NativeWindStyleSheet.setOutput({
-  default: 'native',
-});
+
 
 const RegisterScreen = ({ navigation }) => {
   const [step, setStep] = useState(1);

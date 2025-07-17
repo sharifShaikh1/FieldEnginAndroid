@@ -8,7 +8,18 @@ const AvailableTicketsScreen = () => {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [hasActiveTicket, setHasActiveTicket] = useState(false); // New state for active ticket
   const { user } = useAuth();
+
+  const fetchActiveTicketStatus = useCallback(async () => {
+    try {
+      const { data } = await api.get('/tickets/engineer/active-ticket');
+      setHasActiveTicket(!!data); // Set to true if data exists, false otherwise
+    } catch (err) {
+      console.error("Error fetching active ticket status:", err);
+      setHasActiveTicket(false);
+    }
+  }, []);
 
   const fetchTickets = useCallback(async () => {
     setLoading(true);
@@ -25,13 +36,21 @@ const AvailableTicketsScreen = () => {
 
   useEffect(() => {
     fetchTickets();
-  }, [fetchTickets]);
+    fetchActiveTicketStatus(); // Fetch active ticket status on mount
+  }, [fetchTickets, fetchActiveTicketStatus]);
   
-  const onRefresh = () => { setRefreshing(true); fetchTickets(); };
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchTickets();
+    fetchActiveTicketStatus();
+  };
 
   const handleRequestAccess = async (ticketId) => {
+    if (hasActiveTicket) {
+      Alert.alert('Cannot Request Access', 'You already have an active ticket. Please complete it before requesting access to another.');
+      return;
+    }
     try {
-        // ✅ CORRECTED API CALL URL
         await api.post(`/tickets/${ticketId}/request-access`);
         Alert.alert('Success', 'Access has been requested. The admin will be notified.');
         setTickets(prevTickets => prevTickets.map(t => 
@@ -61,9 +80,9 @@ const AvailableTicketsScreen = () => {
             renderItem={({ item }) => (
                 <TicketCard 
                     ticket={item} 
-                    onAction={() => handleRequestAccess(item._id)} 
+                    onAction={hasActiveTicket ? null : () => handleRequestAccess(item._id)} // Disable action if active ticket exists
                     actionLabel="Request Access"
-                    hasRequested={item.accessRequests.includes(user.id) || item.accessRequestedByMe}
+                    hasRequested={item.accessRequests.some(req => req.userId._id === user.id) || item.accessRequestedByMe}
                 />
             )}
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16 }}

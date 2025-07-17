@@ -213,37 +213,22 @@ export const AuthProvider = ({ children }) => {
   // Function to load user and token from secure storage
 
   const loadSession = useCallback(async () => {
-
     try {
-
-      const storedToken = await SecureStore.getItemAsync('token'); // <--- Use SecureStore
-
+      const storedAccessToken = await SecureStore.getItemAsync('token'); // Use SecureStore for access token
+      const storedRefreshToken = await SecureStore.getItemAsync('refreshToken'); // Use SecureStore for refresh token
       const storedUser = await AsyncStorage.getItem('user'); // User object can remain in AsyncStorage
 
-
-
-      if (storedToken && storedUser) {
-
+      if (storedAccessToken && storedRefreshToken && storedUser) {
         const parsedUser = JSON.parse(storedUser);
-
-        setAuthToken(storedToken); // Set token in Axios
-
-        setToken(storedToken);
-
+        setAuthToken(storedAccessToken); // Set access token in Axios
+        setToken(storedAccessToken);
         setUser(parsedUser);
-
       }
-
     } catch (error) {
-
       console.error('Failed to load user session from secure storage', error);
-
     } finally {
-
       setIsLoading(false);
-
     }
-
   }, []);
 
 
@@ -270,16 +255,12 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  const login = async (userData, authToken) => {
-
+  const login = async (userData, accessToken, refreshToken) => {
     setUser(userData);
-
-    setToken(authToken); // This will trigger the useEffect above to fetch data
-
+    setToken(accessToken); // This will trigger the useEffect above to fetch data
     await AsyncStorage.setItem('user', JSON.stringify(userData));
-
-    await SecureStore.setItemAsync('token', authToken); // <--- Use SecureStore for token
-
+    await SecureStore.setItemAsync('token', accessToken); // Use SecureStore for access token
+    await SecureStore.setItemAsync('refreshToken', refreshToken); // Use SecureStore for refresh token
   };
 
 
@@ -297,6 +278,7 @@ export const AuthProvider = ({ children }) => {
     await AsyncStorage.clear(); // Clear all AsyncStorage items
 
     await SecureStore.deleteItemAsync('token'); // <--- Delete token from SecureStore
+    await SecureStore.deleteItemAsync('refreshToken'); // <--- Delete refresh token from SecureStore
 
   };
 

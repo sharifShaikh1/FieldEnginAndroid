@@ -294,87 +294,50 @@ const HomeScreen = ({ navigation }) => {
 
     return (
 
-        <SafeAreaView className="flex-1 bg-gray-50">
+        <SafeAreaView className="flex-1 bg-gray-100">
+      <ScrollView
+        contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 20 }}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#4F46E5']} tintColor={'#4F46E5'} />}
+      >
+        <View className="flex-row justify-between items-center mb-6">
+          <View>
+            <Text className="text-lg text-gray-500">Welcome Back,</Text>
+            <Text className="text-2xl font-bold text-gray-900">{user?.fullName || 'Engineer'}</Text>
+          </View>
+          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+            <Ionicons name="person-circle-outline" size={36} color="#333" />
+          </TouchableOpacity>
+        </View>
 
-            <ScrollView 
+        {loading && !refreshing ? <ActivityIndicator size="large" color="#4F46E5" className="my-16" /> : (
+          <>
+            {pendingAssignments.length > 0 && (
+              <View className="mb-6">
+                {pendingAssignments.map(ticket => (
+                  <PendingAssignmentCard
+                    key={ticket._id}
+                    ticket={ticket}
+                    onAccept={() => handleAssignmentResponse(ticket._id, 'accepted')}
+                    onReject={() => handleAssignmentResponse(ticket._id, 'rejected')}
+                  />
+                ))}
+              </View>
+            )}
 
-                contentContainerStyle={{ padding: 16 }}
+            <View className="mb-6">
+              <Text className="text-lg font-bold text-gray-800 mb-3">Your Active Ticket</Text>
+              <ActiveTicketCard ticket={activeTicket} />
+            </View>
 
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-
-            >
-
-                <View className="flex-row justify-between items-center mb-6">
-
-                    <View>
-
-                        <Text className="text-xl text-gray-500">Welcome Back,</Text>
-
-                        <Text className="text-3xl font-bold text-gray-900">{user?.fullName || 'Engineer'}</Text>
-
-                    </View>
-
-                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-
-                        <Ionicons name="person-circle-outline" size={32} color="black" />
-
-                    </TouchableOpacity>
-
-                </View>
-
-
-
-                {loading && !refreshing ? <ActivityIndicator size="large" color="#4F46E5" className="my-10" /> : (
-
-                    <>
-
-                        {pendingAssignments.length > 0 && (
-
-                            <View className="mb-6">
-
-                                <Text className="text-xl font-bold text-red-600 mb-3">Action Required</Text>
-
-                                {pendingAssignments.map(ticket => (
-
-                                    <PendingAssignmentCard 
-
-                                        key={ticket._id} 
-
-                                        ticket={ticket} 
-
-                                        onAccept={() => handleAssignmentResponse(ticket._id, 'accepted')}
-
-                                        onReject={() => handleAssignmentResponse(ticket._id, 'rejected')}
-
-                                    />
-
-                                ))}
-
-                            </View>
-
-                        )}
-
-                        <Text className="text-xl font-bold text-gray-800 mb-3">Your Active Ticket</Text>
-
-                        <ActiveTicketCard ticket={activeTicket} />
-
-                        <View className="flex-row justify-between mt-6">
-
-                            <StatCard label="Available" value={stats.available} icon="list-circle" color="#3B82F6" onPress={() => navigation.navigate('Available')} />
-
-                            <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Profile')} />
-
-                            <StatCard label="Completed" value={stats.totalClosedTickets} icon="archive" color="#6B7280" onPress={() => navigation.navigate('History')} />
-
-                        </View>
-
-                    </>
-
-                )}
-
-            </ScrollView>
-
-        </SafeAreaView>
+            <View className="flex-row justify-around">
+              <StatCard label="Available" value={stats.available} icon="list" color="#3B82F6" onPress={() => navigation.navigate('Available')} />
+              <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Profile')} />
+              <StatCard label="Completed" value={stats.totalClosedTickets} icon="archive" color="#6B7280" onPress={() => navigation.navigate('History')} />
+            </View>
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
 
     );
 

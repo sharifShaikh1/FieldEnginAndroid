@@ -13,9 +13,7 @@ const api = axios.create({
   baseURL: `${API_BASE_URL}/api`,
 
   headers: {
-
-    'Content-Type': 'application/json',
-
+    // 'Content-Type': 'application/json', // Removed to allow Axios to set multipart/form-data automatically
   },
 
   timeout: 15000,
@@ -82,7 +80,7 @@ api.interceptors.request.use(async (config) => {
 
 
 
-  if (token && !config.headers.Authorization) {
+  if (token) {
 
     config.headers.Authorization = `Bearer ${token}`;
 
@@ -228,7 +226,7 @@ api.interceptors.response.use(
 
         // For now, we'll re-throw, and AuthContext will handle the logout if it gets a 401.
 
-        return Promise.reject(refreshError);
+        return Promise.reject(error);
 
       } finally {
 

@@ -1,0 +1,6 @@
+et 68728e8ec30508cf6e85c66c
+ ERROR  The action 'NAVIGATE' with payload {"name":"Available"} was not handled by any navigator.
+
+Do you have a screen named 'Available'?
+
+If you're trying to navigate to a screen in a nested navigator, see https://reactnavigation.org/docs/nesting-navigators#navigating-to-a-screen-in-a-nested-navigator.

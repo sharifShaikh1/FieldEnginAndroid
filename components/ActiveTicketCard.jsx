@@ -15,21 +15,25 @@ const ActiveTicketCard = ({ ticket }) => {
   }
 
   return (
-    <View className="bg-white p-5 rounded-2xl shadow-md border border-gray-200">
+    <View className="bg-white p-4 rounded-2xl shadow-md border border-gray-200">
       <View className="flex-row justify-between items-start">
-        <View>
-          <Text className="text-xs text-indigo-600 font-bold uppercase">{ticket.ticketId}</Text>
-          <Text className="text-xl font-bold text-gray-900 mt-1">{ticket.companyName}</Text>
-          <Text className="text-gray-500 mt-1">{ticket.siteAddress}</Text>
+        <View className="flex-1">
+          <Text className="text-sm font-bold text-indigo-600">{ticket.ticketId}</Text>
+          <Text className="text-lg font-bold text-gray-800 mt-1">{ticket.companyName}</Text>
+          <View className="flex-row items-center mt-2">
+            <Ionicons name="location-sharp" size={16} color="gray" />
+            <Text className="text-gray-600 ml-1 flex-shrink">{ticket.siteAddress}</Text>
+          </View>
         </View>
-        <View className="items-center bg-yellow-100 px-3 py-1 rounded-full">
+        <View className="bg-yellow-100 px-3 py-1 rounded-full ml-2">
             <Text className="text-yellow-800 font-bold text-xs">{ticket.status}</Text>
         </View>
       </View>
-      <View className="border-t border-gray-100 my-4" />
-      <Text className="text-sm text-gray-700">{ticket.workDescription}</Text>
-      <TouchableOpacity className="bg-indigo-600 mt-5 p-4 rounded-xl items-center justify-center">
-        <Text className="text-white font-bold text-base">View Details & Update</Text>
+      <View className="border-t border-gray-100 my-3" />
+      <Text className="text-sm text-gray-700 leading-5">{ticket.workDescription}</Text>
+      <TouchableOpacity className="bg-indigo-600 mt-4 p-3 rounded-lg items-center justify-center flex-row">
+        <Ionicons name="arrow-forward-circle" size={20} color="white" />
+        <Text className="text-white font-bold text-sm ml-2">View Details</Text>
       </TouchableOpacity>
     </View>
   );
