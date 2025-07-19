@@ -1,6 +1,3 @@
-et 68728e8ec30508cf6e85c66c
- ERROR  The action 'NAVIGATE' with payload {"name":"Available"} was not handled by any navigator.
-
-Do you have a screen named 'Available'?
-
-If you're trying to navigate to a screen in a nested navigator, see https://reactnavigation.org/docs/nesting-navigators#navigating-to-a-screen-in-a-nested-navigator.
+sx, /src/components/PaymentForm.jsx
+3:49:37 pm [vite] (client) hmr invalidate /src/components/ui/badge.jsx Could not Fast Refresh ("badgeVariants" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
+3:49:37 pm [vite] (client) hmr update /src/index.css, /src/components/DetailsModal.jsx, /src/components/TicketDetailsModal.jsx, /src/components/TicketTable.jsx

@@ -6,7 +6,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
   console.log('ProfileScreen component rendered.');
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -214,24 +214,11 @@ const ProfileScreen = () => {
 
         {renderSection('Certificates', (
           <View>
-            {profile.certificates?.length > 0 ? (
-              profile.certificates.map(renderCertificate)
-            ) : (
-              <Text className="text-gray-600">No certificates added yet.</Text>
-            )}
             <TouchableOpacity
               className="bg-indigo-600 rounded-lg p-3 mt-4 flex-row items-center justify-center"
-              onPress={() => {
-                console.log('Add New Certificate button pressed!');
-                handleAddCertificate();
-              }}
-              disabled={uploading}
+              onPress={() => navigation.navigate('Certificates', { certificates: profile.certificates })}
             >
-              {uploading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <Text className="text-white text-center text-base font-bold">Add New Certificate</Text>
-              )}
+              <Text className="text-white text-center text-base font-bold">View Certificates</Text>
             </TouchableOpacity>
           </View>
         ))}
