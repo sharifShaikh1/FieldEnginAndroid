@@ -1,3 +1,5 @@
-sx, /src/components/PaymentForm.jsx
-3:49:37 pm [vite] (client) hmr invalidate /src/components/ui/badge.jsx Could not Fast Refresh ("badgeVariants" export is incompatible). Learn more at https://github.com/vitejs/vite-plugin-react/tree/main/packages/plugin-react#consistent-components-exports
-3:49:37 pm [vite] (client) hmr update /src/index.css, /src/components/DetailsModal.jsx, /src/components/TicketDetailsModal.jsx, /src/components/TicketTable.jsx
+Running 
+loadSession: storedAccessToken from SecureStore: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzYyOTk4NzEyM2VjMzI2YWFiYWIwYSIsInJvbGUiOiJFbmdpbmVlciIsImlhdCI6MTc1MzE3OTAxMywiZXhwIjoxNzUzNzgzODEzfQ.el7kfUduEVvbT6dlwFnDtlJPhzz67Z-Y0GccWtsXnF0
+loadSession: storedRefreshToken from SecureStore: 9916a9e293eecce3331adef7fe3c0e98457ca0f941209bc93d06bef2ae495669e81f4dc348eef4e3f3aa6987fb101fa4e7a341d9acbc9c501771a822cf8a9226
+2Background location tracking task started for ticket: 68728e8ec30508cf6e85c66c
+🚀 Sending location update: 19.1047808, 72.9018054 for ticket 68728e8ec30508cf6e85c66c

@@ -87,6 +87,11 @@ const LoginScreen = ({ navigation }) => {
             <Text className="text-indigo-400 font-bold">Register Here</Text>
           </TouchableOpacity>
         </View>
+        <View className="flex-row justify-center mt-4">
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
+            <Text className="text-indigo-400 font-bold">Forgot Password?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );

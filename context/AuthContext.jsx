@@ -8,7 +8,7 @@ import * as Location from 'expo-location';
 
 import * as TaskManager from 'expo-task-manager';
 
-import api, { setAuthToken } from '../utils/api';
+import api, { setAuthToken, setApiRefreshToken } from '../utils/api';
 
 import { LOCATION_TASK_NAME } from '../services/locationTask';
 
@@ -214,18 +214,27 @@ export const AuthProvider = ({ children }) => {
 
   const loadSession = useCallback(async () => {
     try {
-      const storedAccessToken = await SecureStore.getItemAsync('token'); // Use SecureStore for access token
-      const storedRefreshToken = await SecureStore.getItemAsync('refreshToken'); // Use SecureStore for refresh token
-      const storedUser = await AsyncStorage.getItem('user'); // User object can remain in AsyncStorage
+      const storedAccessToken = await SecureStore.getItemAsync('token');
+      console.log('loadSession: storedAccessToken from SecureStore:', storedAccessToken);
+      const storedRefreshToken = await SecureStore.getItemAsync('refreshToken');
+      console.log('loadSession: storedRefreshToken from SecureStore:', storedRefreshToken);
+      const storedUser = await AsyncStorage.getItem('user');
 
       if (storedAccessToken && storedRefreshToken && storedUser) {
         const parsedUser = JSON.parse(storedUser);
-        setAuthToken(storedAccessToken); // Set access token in Axios
+        setAuthToken(storedAccessToken);
+        setApiRefreshToken(storedRefreshToken); // Ensure api.js knows the refresh token
         setToken(storedAccessToken);
         setUser(parsedUser);
+      } else {
+        // If any part is missing, ensure tokens are cleared in api.js
+        setAuthToken(null);
+        setApiRefreshToken(null);
       }
     } catch (error) {
       console.error('Failed to load user session from secure storage', error);
+      setAuthToken(null);
+      setApiRefreshToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -258,6 +267,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (userData, accessToken, refreshToken) => {
     setUser(userData);
     setToken(accessToken); // This will trigger the useEffect above to fetch data
+    setApiRefreshToken(refreshToken); // Set refresh token in api.js IMMEDIATELY
     await AsyncStorage.setItem('user', JSON.stringify(userData));
     await SecureStore.setItemAsync('token', accessToken); // Use SecureStore for access token
     await SecureStore.setItemAsync('refreshToken', refreshToken); // Use SecureStore for refresh token
@@ -274,7 +284,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
 
     setAuthToken(null); // Clear token from Axios headers
-
+    setApiRefreshToken(null); // Clear refresh token from api.js
     await AsyncStorage.clear(); // Clear all AsyncStorage items
 
     await SecureStore.deleteItemAsync('token'); // <--- Delete token from SecureStore

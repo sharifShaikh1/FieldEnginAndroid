@@ -3,7 +3,7 @@
 // Define your possible backend IP addresses here
 const locations = {
   LOCATION_A: 'http://192.168.0.108:8021',
-  LOCATION_B: 'http://192.168.0.241:8021',
+  LOCATION_B: 'http://192.168.1.241:8021', // Corrected IP
 };
 
 // --- THIS IS THE ONLY LINE YOU NEED TO CHANGE WHEN YOU SWITCH NETWORKS ---

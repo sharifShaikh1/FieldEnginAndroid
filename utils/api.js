@@ -25,10 +25,15 @@ const api = axios.create({
 // Flag to prevent multiple refresh token requests simultaneously
 
 let isRefreshing = false;
-
 let failedQueue = [];
 
+// Module-level variable to hold the current refresh token
+let currentRefreshToken = null;
 
+// Function to set the refresh token from AuthContext
+export const setApiRefreshToken = (token) => {
+  currentRefreshToken = token;
+};
 
 // Function to process the queue of failed requests
 
@@ -74,17 +79,9 @@ export const setAuthToken = (token) => {
 
 api.interceptors.request.use(async (config) => {
 
-  // We now get the token from SecureStore, not AsyncStorage
+  // Use the token already set by setAuthToken in api.defaults.headers.common
 
-  const token = await SecureStore.getItemAsync('token'); // <--- Use SecureStore
-
-
-
-  if (token) {
-
-    config.headers.Authorization = `Bearer ${token}`;
-
-  }
+  // No need to fetch from SecureStore here for every request
 
   return config;
 
@@ -152,7 +149,7 @@ api.interceptors.response.use(
 
       try {
 
-        const refreshToken = await SecureStore.getItemAsync('refreshToken'); // <--- Get refresh token from SecureStore
+        const refreshToken = currentRefreshToken; // Use the directly managed refresh token
 
 
 
