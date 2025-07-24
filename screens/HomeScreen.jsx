@@ -304,9 +304,14 @@ const HomeScreen = ({ navigation }) => {
             <Text className="text-lg text-gray-500">Welcome Back,</Text>
             <Text className="text-2xl font-bold text-gray-900">{user?.fullName || 'Engineer'}</Text>
           </View>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
-            <Ionicons name="person-circle-outline" size={36} color="#333" />
-          </TouchableOpacity>
+          <View className="flex-row items-center">
+            <TouchableOpacity onPress={() => navigation.navigate('Chat', { chatTitle: 'General Chat' })} className="mr-4">
+              <Ionicons name="chatbubbles-outline" size={30} color="#333" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+              <Ionicons name="person-circle-outline" size={36} color="#333" />
+            </TouchableOpacity>
+          </View>
         </View>
 
         {loading && !refreshing ? <ActivityIndicator size="large" color="#4F46E5" className="my-16" /> : (

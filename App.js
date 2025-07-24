@@ -2,6 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider, useAuth } from './context/AuthContext'; // Import the provider and hook
+import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
 import { Linking, Text } from 'react-native';
 
 import LoginScreen from './screens/LoginScreen';
@@ -63,9 +64,11 @@ const AppContent = () => {
 export default function App() {
   return (
     <AuthProvider>
-      <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-        <AppContent />
-      </NavigationContainer>
+      <SocketProvider>
+        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+          <AppContent />
+        </NavigationContainer>
+      </SocketProvider>
     </AuthProvider>
   );
 }

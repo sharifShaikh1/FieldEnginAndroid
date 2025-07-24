@@ -9,6 +9,8 @@ import TicketHistoryScreen from '../screens/TicketHistoryScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import CertificatesScreen from '../screens/CertificatesScreen';
 import CertificateDetailScreen from '../screens/CertificateDetailScreen';
+import ChatScreen from '../screens/ChatScreen';
+import TicketChatScreen from '../screens/TicketChatScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -45,6 +47,8 @@ const AppNavigator = () => {
       <Stack.Screen name="Available" component={AvailableTicketsScreen} />
       <Stack.Screen name="Certificates" component={CertificatesScreen} />
       <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+      <Stack.Screen name="Chat" component={ChatScreen} />
+      <Stack.Screen name="TicketChat" component={TicketChatScreen} />
     </Stack.Navigator>
   );
 };

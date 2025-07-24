@@ -1,5 +1,23 @@
-Running 
-loadSession: storedAccessToken from SecureStore: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4NzYyOTk4NzEyM2VjMzI2YWFiYWIwYSIsInJvbGUiOiJFbmdpbmVlciIsImlhdCI6MTc1MzE3OTAxMywiZXhwIjoxNzUzNzgzODEzfQ.el7kfUduEVvbT6dlwFnDtlJPhzz67Z-Y0GccWtsXnF0
-loadSession: storedRefreshToken from SecureStore: 9916a9e293eecce3331adef7fe3c0e98457ca0f941209bc93d06bef2ae495669e81f4dc348eef4e3f3aa6987fb101fa4e7a341d9acbc9c501771a822cf8a9226
-2Background location tracking task started for ticket: 68728e8ec30508cf6e85c66c
-🚀 Sending location update: 19.1047808, 72.9018054 for ticket 68728e8ec30508cf6e85c66c
+ChatMessageBubble: Fetching with token: Token present
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753281429735-0211a391-0b09-4bac-8111-6868d187ed24.jpeg?conversationId=687fb09bc751dff565ab229d
+ LOG  ChatMessageBubble: Fetching with token: Token present
+ LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753281587947-183c7a4e-2ad9-4ab5-b196-d751cfb7e51a.jpeg?conversationId=687fb09bc751dff565ab229d
+ LOG  ChatMessageBubble: Fetching with token: Token present
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753282304470-8114452c-f4ec-4ad8-a35f-8def92d74901.jpeg?conversationId=687fb09bc751dff565ab229d
+ LOG  ChatMessageBubble: Fetching with token: Token present
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
+ ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
+ ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
+ ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
+ ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]

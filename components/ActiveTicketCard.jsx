@@ -2,8 +2,11 @@
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 const ActiveTicketCard = ({ ticket }) => {
+  const navigation = useNavigation();
+
   if (!ticket) {
     return (
         <View className="p-5 bg-green-100 rounded-2xl items-center justify-center">
@@ -31,10 +34,19 @@ const ActiveTicketCard = ({ ticket }) => {
       </View>
       <View className="border-t border-gray-100 my-3" />
       <Text className="text-sm text-gray-700 leading-5">{ticket.workDescription}</Text>
-      <TouchableOpacity className="bg-indigo-600 mt-4 p-3 rounded-lg items-center justify-center flex-row">
-        <Ionicons name="arrow-forward-circle" size={20} color="white" />
-        <Text className="text-white font-bold text-sm ml-2">View Details</Text>
-      </TouchableOpacity>
+      <View className="flex-row justify-between mt-4">
+        <TouchableOpacity className="bg-indigo-600 flex-1 p-3 rounded-lg items-center justify-center flex-row mr-2">
+          <Ionicons name="arrow-forward-circle" size={20} color="white" />
+          <Text className="text-white font-bold text-sm ml-2">View Details</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          className="bg-blue-500 p-3 rounded-lg items-center justify-center flex-row ml-2"
+          onPress={() => navigation.navigate('TicketChat', { ticketId: ticket._id, chatTitle: `Ticket ${ticket.ticketId}` })}
+        >
+          <Ionicons name="chatbubbles" size={20} color="white" />
+          <Text className="text-white font-bold text-sm ml-2">Chat</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
