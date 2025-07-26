@@ -25,20 +25,24 @@ const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversation
     const MAX_RETRIES = 3;
     const RETRY_DELAY_MS = 1000; // 1 second
 
-    const fetchFile = async (retryCount = 0) => {
-      if (!hasFile || !token || !conversationId) {
-        setIsLoadingFile(false);
-        return;
-      }
-
-      if (isOptimistic && msg.fileKey.startsWith('file://')) {
-        if (isMounted) {
-          setFileUri(msg.fileKey);
+    // If the message is optimistic and has a local file URI, just use it directly.
+    if (isOptimistic && msg.fileKey && msg.fileKey.startsWith('file://')) {
+      if (isMounted) {
+        setFileUri(msg.fileKey);
+        if (isImageFile) {
           Image.getSize(msg.fileKey, (width, height) => {
             if (isMounted) setImageAspectRatio(width / height);
           }, () => { if (isMounted) setImageAspectRatio(1); });
-          setIsLoadingFile(false);
         }
+        setIsLoadingFile(false);
+      }
+      return; // Stop the effect here to prevent network request
+    }
+
+    const fetchFile = async (retryCount = 0) => {
+      // If the message is not optimistic or has no file, do nothing.
+      if (!hasFile || !token || !conversationId || !msg.fileKey || msg.fileKey.startsWith('file://')) {
+        setIsLoadingFile(false);
         return;
       }
 
@@ -57,9 +61,11 @@ const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversation
         if (downloadResult.status === 200) {
           if (isMounted) {
             setFileUri(downloadResult.uri);
-            Image.getSize(downloadResult.uri, (width, height) => {
-              if (isMounted) setImageAspectRatio(width / height || 1);
-            }, () => { if (isMounted) setImageAspectRatio(1); });
+            if (isImageFile) {
+              Image.getSize(downloadResult.uri, (width, height) => {
+                if (isMounted) setImageAspectRatio(width / height || 1);
+              }, () => { if (isMounted) setImageAspectRatio(1); });
+            }
           }
         } else if (downloadResult.status === 404 && retryCount < MAX_RETRIES) {
           console.warn(`File not found (404) for ${msg.fileKey}, retrying... Attempt ${retryCount + 1}/${MAX_RETRIES}`);
@@ -81,7 +87,7 @@ const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversation
     return () => {
       isMounted = false;
     };
-  }, [msg.fileKey, token, conversationId, API_BASE_URL, isOptimistic, hasFile, msg.fileType, msg.originalFileName]);
+  }, [msg.fileKey, token, conversationId]);
 
   const handleFilePress = async () => {
     if (isImageFile) {

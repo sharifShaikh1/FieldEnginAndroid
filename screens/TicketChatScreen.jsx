@@ -75,6 +75,7 @@ const TicketChatScreen = ({ route, navigation }) => {
       const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
       return base64;
     } catch (err) {
+      console.error("Error converting file to base64:", err);
       throw new Error(`Failed to convert file to base64: ${err.message}`);
     }
   };
@@ -109,58 +110,67 @@ const TicketChatScreen = ({ route, navigation }) => {
   const sendMessage = useCallback(async () => {
     if (!socket || (!newMessage.trim() && !selectedFile)) return;
 
-    let fileData = null;
-    let fileType = null;
-    let originalFileName = null;
-
-    if (selectedFile) {
-      try {
-        fileData = await fileToBase64(selectedFile.uri);
-        fileType = selectedFile.mimeType;
-        originalFileName = selectedFile.name;
-      } catch (error) {
-        console.error("Error processing file:", error);
-        Alert.alert("File Error", "Could not process selected file.");
-        return;
-      }
-    }
-
-    const messagePayload = {
-      text: newMessage.trim(),
-      ticketId: ticketId,
-      fileData: fileData,
-      fileType: fileType,
-      originalFileName: originalFileName,
-      tempId: Date.now().toString(),
-    };
-
+    const tempId = Date.now().toString();
+    // Optimistically add message to UI
     setMessages((prevMessages) => [
       ...prevMessages,
       {
-        _id: messagePayload.tempId,
-        text: messagePayload.text,
+        _id: tempId,
+        text: newMessage.trim(),
         senderId: { _id: user._id, fullName: user.fullName, role: user.role },
         timestamp: new Date().toISOString(),
-        tempId: messagePayload.tempId,
-        fileKey: selectedFile ? selectedFile.uri : null, // Use local URI for optimistic display
+        tempId: tempId,
+        fileKey: selectedFile ? selectedFile.uri : null,
         fileType: selectedFile ? selectedFile.mimeType : null,
         originalFileName: selectedFile ? selectedFile.name : null,
       },
     ]);
-    setNewMessage('');
-    clearFile();
 
-    socket.emit('sendMessage', messagePayload, (response) => {
-      if (response.success) {
-        // Update the optimistic message with the actual message from the backend
-        setMessages((prevMessages) => prevMessages.map(msg =>
-          msg.tempId === messagePayload.tempId ? { ...response.message, tempId: undefined } : msg
-        ));
-      } else {
-        console.error('Failed to send message:', response.message);
-        setMessages((prevMessages) => prevMessages.filter(msg => msg.tempId !== messagePayload.tempId));
+    const textToSend = newMessage.trim();
+    const fileToSend = selectedFile;
+
+    setNewMessage('');
+    setSelectedFile(null);
+    setFilePreview(null);
+
+    try {
+      let fileData = null;
+      let fileType = null;
+      let originalFileName = null;
+
+      if (fileToSend) {
+        fileData = await fileToBase64(fileToSend.uri);
+        fileType = fileToSend.mimeType;
+        originalFileName = fileToSend.name;
       }
-    });
+
+      const messagePayload = {
+        text: textToSend,
+        ticketId: ticketId,
+        fileData: fileData,
+        fileType: fileType,
+        originalFileName: originalFileName,
+        tempId: tempId,
+      };
+
+      socket.emit('sendMessage', messagePayload, (response) => {
+        if (response.success) {
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg.tempId === tempId ? { ...response.message, tempId: undefined } : msg
+            )
+          );
+        } else {
+          console.error('Failed to send message:', response.message);
+          setMessages((prevMessages) => prevMessages.filter((msg) => msg.tempId !== tempId));
+          Alert.alert("Send Error", "Could not send the message.");
+        }
+      });
+    } catch (error) {
+      console.error("Error processing file or sending message:", error);
+      setMessages((prevMessages) => prevMessages.filter((msg) => msg.tempId !== tempId));
+      Alert.alert("Error", "Could not process the file for sending.");
+    }
   }, [socket, newMessage, selectedFile, ticketId, user]);
 
   const renderMessage = ({ item }) => {
