@@ -212,7 +212,7 @@ const ChatScreen = ({ route, navigation }) => {
       <View style={styles.inputContainer}>
         {selectedFile && (
           <View style={styles.filePreviewContainer}>
-            {selectedFile.type.startsWith('image/') ? (
+            {selectedFile.mimeType.startsWith('image/') ? (
               <Image source={{ uri: filePreview }} style={styles.filePreviewImage} />
             ) : (
               <View style={styles.filePreviewTextContainer}>

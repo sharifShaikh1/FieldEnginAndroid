@@ -1,23 +1,7 @@
-ChatMessageBubble: Fetching with token: Token present
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753281429735-0211a391-0b09-4bac-8111-6868d187ed24.jpeg?conversationId=687fb09bc751dff565ab229d
- LOG  ChatMessageBubble: Fetching with token: Token present
- LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753281587947-183c7a4e-2ad9-4ab5-b196-d751cfb7e51a.jpeg?conversationId=687fb09bc751dff565ab229d
- LOG  ChatMessageBubble: Fetching with token: Token present
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Fetching file from URL: http://192.168.1.241:8021/api/files/1753282304470-8114452c-f4ec-4ad8-a35f-8def92d74901.jpeg?conversationId=687fb09bc751dff565ab229d
- LOG  ChatMessageBubble: Fetching with token: Token present
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- LOG  ChatMessageBubble: Skipping file fetch due to missing data: {"conversationId": "687fb09bc751dff565ab229d", "fileKey": null, "hasFile": false, "token": true}
- ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
- ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
- ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
- ERROR  Error fetching file for mobile: [Error: Cannot create URL for blob]
+ ERROR  Error fetching file for mobile: [Error: Call to function 'ExponentFileSystem.downloadAsync' has been rejected.
+→ Caused by: java.lang.IllegalArgumentException: Invalid URL port: "8021api"]
+ ERROR  Error fetching file for mobile: [Error: Call to function 'ExponentFileSystem.downloadAsync' has been rejected.
+→ Caused by: java.lang.IllegalArgumentException: Invalid URL port: "8021api"]
+ ERROR  Error fetching file for mobile: [Error: Call to function 'ExponentFileSystem.downloadAsync' has been rejected.
+→ Caused by: java.lang.IllegalArgumentException: Invalid URL port: "8021api"]
+ 
