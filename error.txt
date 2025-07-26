@@ -1,37 +1,7 @@
-arn more: https://expo.fyi/dev-client.
- LOG  Background location tracking has been stopped.
- LOG  Socket.IO connected: WVEwk99PJLEuRSO_AAAF
- LOG  Background location tracking task started for ticket: 68728e8ec30508cf6e85c66c
- LOG  Background location tracking task started for ticket: 68728e8ec30508cf6e85c66c
- LOG  🚀 Sending location update: 19.1047716, 72.9018354 for ticket 68728e8ec30508cf6e85c66c
- LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
- LOG  Received message from socket (full object): {
-  "_id": "6884c963f04ad09cadf268cc",
-  "conversationId": "6884c0569149f22d976cc8dc",
-  "senderId": {
-    "_id": "687629987123ec326aabab0a",
-    "fullName": "Engineer a",
-    "role": "Engineer"
-  },
-  "text": "",
-  "fileKey": "1753532771634-25a96e46-d6ad-4fac-beec-65996a1e58e9.jpeg",
-  "fileType": "image/jpeg",
-  "originalFileName": "Screenshot_2025-07-26-16-09-40-65_1c337646f29875672b5a61192b9010f9.jpg",
-  "timestamp": "2025-07-26T12:26:11.835Z",
-  "__v": 0,
-  "tempId": "1753532771419"
-}
- LOG  Received message from socket: {"__v": 0, "_id": "6884c963f04ad09cadf268cc", "conversationId": "6884c0569149f22d976cc8dc", "fileKey": "1753532771634-25a96e46-d6ad-4fac-beec-65996a1e58e9.jpeg", "fileType": "image/jpeg", "originalFileName": "Screenshot_2025-07-26-16-09-40-65_1c337646f29875672b5a61192b9010f9.jpg", "senderId": {"_id": "687629987123ec326aabab0a", "fullName": "Engineer a", "role": "Engineer"}, "tempId": "1753532771419", "text": "", "timestamp": "2025-07-26T12:26:11.835Z"}
- LOG  Background tracking is already active for the correct ticket: 68728e8ec30508cf6e85c66c
- LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
- LOG  Socket.IO disconnected: transport close
- LOG  Socket.IO connected: Yb138ehawu2-fGHUAAAH
- LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
+ Joined ticket room: 68728e8ec30508cf6e85c66c
+ ERROR  Failed to send message: Failed to send message.
  LOG  Background tracking is already active for the correct ticket: 68728e8ec30508cf6e85c66c
  LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
  LOG  Socket.IO disconnected: transport error
- LOG  Socket.IO connected: gPGLkkkaDfO4thdmAAAD
- LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
- LOG  Socket.IO disconnected: transport close
- LOG  Socket.IO connected: ExIsyQhxw0BqLAZgAAAF
- LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
+ ERROR  Socket.IO connection error: websocket error
+ ERROR  Socket.IO connection error: websocket error

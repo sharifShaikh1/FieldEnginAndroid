@@ -16,7 +16,7 @@ const api = axios.create({
     // 'Content-Type': 'application/json', // Removed to allow Axios to set multipart/form-data automatically
   },
 
-  timeout: 15000,
+  timeout: 60000, // Increased timeout to 60 seconds for larger file uploads
 
 });
 
