@@ -1,12 +1,22 @@
-  Warning: TypeError: Cannot read property 'startsWith' of undefined
+OG  Joined ticket room: 68728e8ec30508cf6e85c66c
+ ERROR  The action 'NAVIGATE' with payload {"name":"ParticipantList","params":{"ticketId":"68728e8ec30508cf6e85c66c"}} was not handled by any navigator.
 
-This error is located at:
+Do you have a screen named 'ParticipantList'?
 
-Call Stack
-  RNSScreenContainer (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  AppNavigator (<anonymous>)
-  RNSScreenContainer (<anonymous>)
-  RNCSafeAreaProvider (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  App (<anonymous>)
+If you're trying to navigate to a screen in a nested navigator, see https://reactnavigation.org/docs/nesting-navigators#navigating-to-a-screen-in-a-nested-navigator.
+
+This is a development-only warning and won't be shown in production.
+ ERROR  ReferenceError: Property 'Platform' doesn't exist, js engine: hermes
+ LOG  Socket.IO disconnected: transport error
+ LOG  Socket.IO connected: 6socTufT6uoxnRMtAAAB
+ LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
+ LOG  Socket.IO disconnected: transport error
+ LOG  Socket.IO connected: 0RX5CIjmDtHGIFeIAAAD
+ LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
+ LOG  Socket.IO disconnected: transport error
+ LOG  Socket.IO connected: 426eqIrriN2iw14nAAAD
+ LOG  Joined ticket room: 68728e8ec30508cf6e85c66c
+› Reloading apps
+No apps connected. Sending "reload" to all React Native apps failed. Make sure your app is running in the simulator or on a phone connected via USB.
+› Reloading apps
+Android Bundled 83ms index.js (1 module)

@@ -233,7 +233,9 @@ const TicketChatScreen = ({ route, navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{chatTitle || 'Ticket Chat'}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('ParticipantList', { ticketId: ticketId })} style={styles.headerTitleContainer}>
+          <Text style={styles.headerTitle}>{chatTitle || 'Ticket Chat'}</Text>
+        </TouchableOpacity>
       </View>
       <FlatList
         ref={flatListRef}
