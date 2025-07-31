@@ -12,7 +12,7 @@ import api, { setAuthToken, setApiRefreshToken } from '../utils/api';
 
 import { LOCATION_TASK_NAME } from '../services/locationTask';
 
-import { Alert } from 'react-native'; // <--- ADD THIS for Alerts if needed in startBackgroundTracking
+import { Alert, AppState } from 'react-native'; // <--- ADD THIS for Alerts if needed in startBackgroundTracking
 
 
 
@@ -63,6 +63,23 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+  const [pendingTrackingTicketId, setPendingTrackingTicketId] = useState(null);
+
+  useEffect(() => {
+    const handleAppStateChange = async (nextAppState) => {
+      if (nextAppState === 'active' && pendingTrackingTicketId) {
+        console.log('App became active, attempting to start deferred tracking.');
+        await startBackgroundTracking(pendingTrackingTicketId);
+        setPendingTrackingTicketId(null); 
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [pendingTrackingTicketId]);
 
 
 
@@ -112,7 +129,12 @@ export const AuthProvider = ({ children }) => {
 
             if (!isTracking) { // Only start if not already tracking
 
-                await startBackgroundTracking(newActiveTicket._id);
+                if (AppState.currentState === 'active') {
+                    await startBackgroundTracking(newActiveTicket._id);
+                } else {
+                    console.log('App is in background, deferring location tracking start.');
+                    setPendingTrackingTicketId(newActiveTicket._id);
+                }
 
             }
 
@@ -222,6 +244,7 @@ export const AuthProvider = ({ children }) => {
 
       if (storedAccessToken && storedRefreshToken && storedUser) {
         const parsedUser = JSON.parse(storedUser);
+        console.log('AuthContext: Parsed user from AsyncStorage:', parsedUser);
         setAuthToken(storedAccessToken);
         setApiRefreshToken(storedRefreshToken); // Ensure api.js knows the refresh token
         setToken(storedAccessToken);

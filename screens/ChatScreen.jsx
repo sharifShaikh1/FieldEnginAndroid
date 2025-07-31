@@ -55,7 +55,7 @@ const ChatScreen = ({ route, navigation }) => {
     });
 
     const handleReceiveMessage = (message) => {
-      console.log('Received message:', message);
+      console.log(`Received message:`, message);
       setMessages((prevMessages) => {
         const existingIndex = prevMessages.findIndex(msg => msg.tempId === message.tempId);
         if (existingIndex > -1) {
@@ -72,6 +72,15 @@ const ChatScreen = ({ route, navigation }) => {
     };
 
     socket.on('receiveMessage', handleReceiveMessage);
+
+    // Scroll to end when a new message is added
+    if (messages.length > 0) {
+      setTimeout(() => {
+        if (flatListRef.current) {
+          flatListRef.current.scrollToEnd({ animated: true });
+        }
+      }, 100);
+    }
 
     return () => {
       socket.off('receiveMessage', handleReceiveMessage);
@@ -168,15 +177,18 @@ const ChatScreen = ({ route, navigation }) => {
   }, [socket, newMessage, selectedFile, ticketId, receiverId, user]);
 
   const renderMessage = ({ item }) => {
-    const isMyMessage = item.senderId._id === user._id;
+    const isMyMessage = item.senderId._id === user.id;
+    console.log(`Message ID: ${item._id}, Sender ID: ${item.senderId._id}, User ID: ${user._id}, Is My Message: ${isMyMessage}`);
     return (
-      <ChatMessageBubble
-        msg={item}
-        isMyMessage={isMyMessage}
-        token={user.token} // Assuming user object has token, or pass from auth context
-        API_BASE_URL={API_BASE_URL}
-        conversationId={conversationId}
-      />
+      <View style={[styles.messageRow, isMyMessage ? styles.myMessageRow : styles.otherMessageRow]}>
+        <ChatMessageBubble
+          msg={item}
+          isMyMessage={isMyMessage}
+          token={user.token}
+          API_BASE_URL={API_BASE_URL}
+          conversationId={conversationId}
+        />
+      </View>
     );
   };
 
@@ -204,10 +216,9 @@ const ChatScreen = ({ route, navigation }) => {
       <FlatList
         ref={flatListRef}
         data={messages}
-        keyExtractor={(item) => item._id.toString()}
+        keyExtractor={(item) => (item.tempId ? item.tempId.toString() : item._id.toString())}
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
-        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
       />
       <View style={styles.inputContainer}>
         {selectedFile && (
@@ -269,6 +280,18 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
+  messageRow: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    flex: 1,
+  },
+  myMessageRow: {
+    justifyContent: 'flex-end',
+  },
+  otherMessageRow: {
+    justifyContent: 'flex-start',
+  },
+  
   
   inputContainer: {
     flexDirection: 'row',

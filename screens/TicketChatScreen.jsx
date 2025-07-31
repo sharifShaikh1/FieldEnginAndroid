@@ -1,5 +1,17 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, StyleSheet, Image, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ActivityIndicator,
+  StyleSheet,
+  Image,
+  Alert,
+} from 'react-native';
 import ChatMessageBubble from '../components/ChatMessageBubble';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -19,7 +31,6 @@ const TicketChatScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
   const [conversationId, setConversationId] = useState(null);
   const flatListRef = useRef(null);
-  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (!socket || !user || !ticketId) return;
@@ -46,7 +57,6 @@ const TicketChatScreen = ({ route, navigation }) => {
     });
 
     const handleReceiveMessage = (message) => {
-      console.log('Received message from socket (full object):', JSON.stringify(message, null, 2));
       console.log('Received message from socket:', message);
       setMessages((prevMessages) => {
         const existingIndex = prevMessages.findIndex(msg => msg.tempId === message.tempId);
@@ -83,13 +93,13 @@ const TicketChatScreen = ({ route, navigation }) => {
   const handleFileSelect = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: ['image/*', 'application/pdf'], // Allow images and PDFs
+        type: ['image/*', 'application/pdf'],
         copyToCacheDirectory: true,
       });
 
       if (!result.canceled) {
         const asset = result.assets[0];
-        if (asset.size > 5 * 1024 * 1024) { // 5MB limit
+        if (asset.size > 5 * 1024 * 1024) {
           Alert.alert("File Too Large", "Maximum file size is 5MB.");
           return;
         }
@@ -111,8 +121,8 @@ const TicketChatScreen = ({ route, navigation }) => {
     if (!socket || (!newMessage.trim() && !selectedFile)) return;
 
     const tempId = Date.now().toString();
-    // Optimistically add message to UI
-    setMessages((prevMessages) => [
+
+        setMessages((prevMessages) => [
       ...prevMessages,
       {
         _id: tempId,
@@ -174,17 +184,26 @@ const TicketChatScreen = ({ route, navigation }) => {
   }, [socket, newMessage, selectedFile, ticketId, user]);
 
   const renderMessage = ({ item }) => {
-    const isMyMessage = item.senderId._id === user._id;
-    return (
+  const isMyMessage = item.senderId._id === user.id;
+  console.log('Message:', item._id, 'isMyMessage:', isMyMessage, 'Sender ID:', item.senderId?._id, 'User ID:', user._id); // Debug log
+  return (
+    <View style={{
+      flexDirection: 'row',
+      justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
+      marginVertical: 4,
+      paddingHorizontal: 10,
+    }}>
       <ChatMessageBubble
         msg={item}
         isMyMessage={isMyMessage}
         token={token}
         API_BASE_URL={API_BASE_URL}
         conversationId={conversationId}
+        // Remove the style prop or ensure it doesn't conflict with alignment
       />
-    );
-  };
+    </View>
+  );
+};
 
   if (loading) {
     return (
@@ -275,7 +294,11 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
   },
-  
+  messageRow: {
+    flexDirection: 'row',
+    marginBottom: 10,
+    flex: 1,
+  },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',

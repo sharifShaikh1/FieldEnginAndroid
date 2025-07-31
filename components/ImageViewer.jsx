@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
 
-const ImageViewer = ({ visible, onClose, imageUri, senderName, timestamp }) => {
+const ImageViewer = ({ visible, onClose, imageUri, senderName, timestamp, isLoading }) => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -62,7 +62,7 @@ const ImageViewer = ({ visible, onClose, imageUri, senderName, timestamp }) => {
         </View>
 
         <View style={styles.imageContainer}>
-          {isSaving ? (
+          {isLoading || isSaving ? (
             <ActivityIndicator size="large" color="#fff" />
           ) : (
             <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
