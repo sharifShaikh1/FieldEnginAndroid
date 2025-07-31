@@ -40,12 +40,12 @@ const TicketChatScreen = ({ route, navigation }) => {
         console.log(`Joined ticket room: ${ticketId}`);
         socket.emit('fetchMessages', { ticketId }, (res) => {
           if (res.messages) {
-            setMessages(res.messages);
+            setMessages(res.messages.reverse()); // Reverse messages here
             setConversationId(res.conversationId);
             setLoading(false);
             setTimeout(() => {
               if (flatListRef.current) {
-                flatListRef.current.scrollToEnd({ animated: false });
+                flatListRef.current.scrollToOffset({ offset: 0, animated: false }); // Scroll to top of inverted list
               }
             }, 100);
           }
@@ -65,11 +65,11 @@ const TicketChatScreen = ({ route, navigation }) => {
           updatedMessages[existingIndex] = { ...message, tempId: undefined };
           return updatedMessages;
         } else {
-          return [...prevMessages, message];
+          return [message, ...prevMessages]; // Prepend new message
         }
       });
       if (flatListRef.current) {
-        flatListRef.current.scrollToEnd({ animated: true });
+        flatListRef.current.scrollToOffset({ offset: 0, animated: true }); // Scroll to top of inverted list
       }
     };
 
@@ -123,7 +123,6 @@ const TicketChatScreen = ({ route, navigation }) => {
     const tempId = Date.now().toString();
 
         setMessages((prevMessages) => [
-      ...prevMessages,
       {
         _id: tempId,
         text: newMessage.trim(),
@@ -134,6 +133,7 @@ const TicketChatScreen = ({ route, navigation }) => {
         fileType: selectedFile ? selectedFile.mimeType : null,
         originalFileName: selectedFile ? selectedFile.name : null,
       },
+      ...prevMessages,
     ]);
 
     const textToSend = newMessage.trim();
@@ -217,8 +217,8 @@ const TicketChatScreen = ({ route, navigation }) => {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} // Revert to original iOS offset, keep Android 0 for now
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -232,7 +232,7 @@ const TicketChatScreen = ({ route, navigation }) => {
         keyExtractor={(item) => item._id.toString()}
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
-        onContentSizeChange={() => flatListRef.current.scrollToEnd({ animated: true })}
+        inverted={true}
       />
       <View style={styles.inputContainer}>
         {selectedFile && (
@@ -293,6 +293,7 @@ const styles = StyleSheet.create({
   messagesContainer: {
     paddingVertical: 10,
     paddingHorizontal: 10,
+    flexGrow: 1, // Ensure content grows to fill space
   },
   messageRow: {
     flexDirection: 'row',
