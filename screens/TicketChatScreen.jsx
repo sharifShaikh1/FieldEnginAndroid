@@ -40,12 +40,12 @@ const TicketChatScreen = ({ route, navigation }) => {
         console.log(`Joined ticket room: ${ticketId}`);
         socket.emit('fetchMessages', { ticketId }, (res) => {
           if (res.messages) {
-            setMessages(res.messages.reverse()); // Reverse messages here
+            setMessages(res.messages.reverse());
             setConversationId(res.conversationId);
             setLoading(false);
             setTimeout(() => {
               if (flatListRef.current) {
-                flatListRef.current.scrollToOffset({ offset: 0, animated: false }); // Scroll to top of inverted list
+                flatListRef.current.scrollToOffset({ offset: 0, animated: false });
               }
             }, 100);
           }
@@ -57,7 +57,6 @@ const TicketChatScreen = ({ route, navigation }) => {
     });
 
     const handleReceiveMessage = (message) => {
-      console.log('Received message from socket:', message);
       setMessages((prevMessages) => {
         const existingIndex = prevMessages.findIndex(msg => msg.tempId === message.tempId);
         if (existingIndex > -1) {
@@ -65,11 +64,11 @@ const TicketChatScreen = ({ route, navigation }) => {
           updatedMessages[existingIndex] = { ...message, tempId: undefined };
           return updatedMessages;
         } else {
-          return [message, ...prevMessages]; // Prepend new message
+          return [message, ...prevMessages];
         }
       });
       if (flatListRef.current) {
-        flatListRef.current.scrollToOffset({ offset: 0, animated: true }); // Scroll to top of inverted list
+        flatListRef.current.scrollToOffset({ offset: 0, animated: true });
       }
     };
 
@@ -95,16 +94,25 @@ const TicketChatScreen = ({ route, navigation }) => {
       const result = await DocumentPicker.getDocumentAsync({
         type: ['image/*', 'application/pdf'],
         copyToCacheDirectory: true,
+        multiple: true,
       });
 
       if (!result.canceled) {
-        const asset = result.assets[0];
-        if (asset.size > 5 * 1024 * 1024) {
-          Alert.alert("File Too Large", "Maximum file size is 5MB.");
-          return;
+        const validAssets = result.assets.filter(asset => {
+          if (asset.size > 5 * 1024 * 1024) {
+            Alert.alert("File Too Large", `File ${asset.name} exceeds the 5MB limit.`);
+            return false;
+          }
+          return true;
+        });
+
+        if (validAssets.length > 0) {
+          setSelectedFile(validAssets);
+          setFilePreview(validAssets[0].uri);
+        } else {
+          setSelectedFile(null);
+          setFilePreview(null);
         }
-        setSelectedFile(asset);
-        setFilePreview(asset.uri);
       }
     } catch (err) {
       console.error("Error picking document:", err);
@@ -118,92 +126,105 @@ const TicketChatScreen = ({ route, navigation }) => {
   };
 
   const sendMessage = useCallback(async () => {
-    if (!socket || (!newMessage.trim() && !selectedFile)) return;
+    if (!socket || (!newMessage.trim() && (!selectedFile || selectedFile.length === 0))) return;
 
-    const tempId = Date.now().toString();
+    const currentTimestamp = new Date().toISOString();
+    const newGroupId = selectedFile && selectedFile.length > 1 ? Date.now().toString() : undefined;
 
-        setMessages((prevMessages) => [
-      {
+    const messagesToSend = [];
+
+    if (newMessage.trim()) {
+      const tempId = Date.now().toString() + '_text';
+      messagesToSend.push({
         _id: tempId,
         text: newMessage.trim(),
-        senderId: { _id: user._id, fullName: user.fullName, role: user.role },
-        timestamp: new Date().toISOString(),
+        senderId: { _id: user.id, fullName: user.fullName, role: user.role },
+        timestamp: currentTimestamp,
         tempId: tempId,
-        fileKey: selectedFile ? selectedFile.uri : null,
-        fileType: selectedFile ? selectedFile.mimeType : null,
-        originalFileName: selectedFile ? selectedFile.name : null,
-      },
-      ...prevMessages,
-    ]);
+        groupId: newGroupId,
+      });
+    }
 
-    const textToSend = newMessage.trim();
-    const fileToSend = selectedFile;
+    if (selectedFile && selectedFile.length > 0) {
+      for (const file of selectedFile) {
+        const tempId = Date.now().toString() + '_' + file.name;
+        messagesToSend.push({
+          _id: tempId,
+          text: '',
+          senderId: { _id: user.id, fullName: user.fullName, role: user.role },
+          timestamp: currentTimestamp,
+          tempId: tempId,
+          fileKey: file.uri,
+          fileType: file.mimeType,
+          originalFileName: file.name,
+          groupId: newGroupId,
+        });
+      }
+    }
+
+    setMessages((prevMessages) => [...messagesToSend, ...prevMessages]);
 
     setNewMessage('');
     setSelectedFile(null);
     setFilePreview(null);
 
-    try {
-      let fileData = null;
-      let fileType = null;
-      let originalFileName = null;
-
-      if (fileToSend) {
-        fileData = await fileToBase64(fileToSend.uri);
-        fileType = fileToSend.mimeType;
-        originalFileName = fileToSend.name;
-      }
-
-      const messagePayload = {
-        text: textToSend,
-        ticketId: ticketId,
-        fileData: fileData,
-        fileType: fileType,
-        originalFileName: originalFileName,
-        tempId: tempId,
-      };
-
-      socket.emit('sendMessage', messagePayload, (response) => {
-        if (response.success) {
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              msg.tempId === tempId ? { ...response.message, tempId: undefined } : msg
-            )
-          );
-        } else {
-          console.error('Failed to send message:', response.message);
-          setMessages((prevMessages) => prevMessages.filter((msg) => msg.tempId !== tempId));
-          Alert.alert("Send Error", "Could not send the message.");
+    for (const msg of messagesToSend) {
+      try {
+        let fileData = null;
+        if (msg.fileKey && !msg.fileKey.startsWith('http')) {
+          fileData = await fileToBase64(msg.fileKey);
         }
-      });
-    } catch (error) {
-      console.error("Error processing file or sending message:", error);
-      setMessages((prevMessages) => prevMessages.filter((msg) => msg.tempId !== tempId));
-      Alert.alert("Error", "Could not process the file for sending.");
+
+        const messagePayload = {
+          text: msg.text,
+          ticketId: ticketId,
+          fileData: fileData,
+          fileType: msg.fileType,
+          originalFileName: msg.originalFileName,
+          tempId: msg.tempId,
+          groupId: msg.groupId,
+        };
+
+        socket.emit('sendMessage', messagePayload, (response) => {
+          if (response.success) {
+            setMessages((prevMessages) =>
+              prevMessages.map((m) =>
+                m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m
+              )
+            );
+          } else {
+            console.error('Failed to send message:', response.message);
+            setMessages((prevMessages) => prevMessages.filter((m) => m.tempId !== msg.tempId));
+            Alert.alert("Send Error", "Could not send the message.");
+          }
+        });
+      } catch (error) {
+        console.error("Error processing file or sending message:", error);
+        setMessages((prevMessages) => prevMessages.filter((m) => m.tempId !== msg.tempId));
+        Alert.alert("Error", "Could not process the file for sending.");
+      }
     }
   }, [socket, newMessage, selectedFile, ticketId, user]);
 
   const renderMessage = ({ item }) => {
-  const isMyMessage = item.senderId._id === user.id;
-  console.log('Message:', item._id, 'isMyMessage:', isMyMessage, 'Sender ID:', item.senderId?._id, 'User ID:', user._id); // Debug log
-  return (
-    <View style={{
-      flexDirection: 'row',
-      justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
-      marginVertical: 4,
-      paddingHorizontal: 10,
-    }}>
-      <ChatMessageBubble
-        msg={item}
-        isMyMessage={isMyMessage}
-        token={token}
-        API_BASE_URL={API_BASE_URL}
-        conversationId={conversationId}
-        // Remove the style prop or ensure it doesn't conflict with alignment
-      />
-    </View>
-  );
-};
+    const isMyMessage = item.senderId._id === user.id;
+    return (
+      <View style={{
+        flexDirection: 'row',
+        justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
+        marginVertical: 4,
+        paddingHorizontal: 10,
+      }}>
+        <ChatMessageBubble
+          msg={item}
+          isMyMessage={isMyMessage}
+          token={token}
+          API_BASE_URL={API_BASE_URL}
+          conversationId={conversationId}
+        />
+      </View>
+    );
+  };
 
   if (loading) {
     return (
@@ -218,7 +239,7 @@ const TicketChatScreen = ({ route, navigation }) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} // Revert to original iOS offset, keep Android 0 for now
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -235,21 +256,6 @@ const TicketChatScreen = ({ route, navigation }) => {
         inverted={true}
       />
       <View style={styles.inputContainer}>
-        {selectedFile && (
-          <View style={styles.filePreviewContainer}>
-            {selectedFile.mimeType.startsWith('image/') ? (
-              <Image source={{ uri: filePreview }} style={styles.filePreviewImage} />
-            ) : (
-              <View style={styles.filePreviewTextContainer}>
-                <Ionicons name="document-text-outline" size={24} color="#333" />
-                <Text style={styles.filePreviewText}>{selectedFile.name}</Text>
-              </View>
-            )}
-            <TouchableOpacity onPress={clearFile} style={styles.clearFileButton}>
-              <Ionicons name="close-circle" size={20} color="red" />
-            </TouchableOpacity>
-          </View>
-        )}
         <TouchableOpacity onPress={handleFileSelect} style={styles.attachButton}>
           <Ionicons name="attach" size={24} color="#555" />
         </TouchableOpacity>
@@ -293,12 +299,7 @@ const styles = StyleSheet.create({
   messagesContainer: {
     paddingVertical: 10,
     paddingHorizontal: 10,
-    flexGrow: 1, // Ensure content grows to fill space
-  },
-  messageRow: {
-    flexDirection: 'row',
-    marginBottom: 10,
-    flex: 1,
+    flexGrow: 1,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -332,35 +333,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  filePreviewContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
-    borderRadius: 10,
-    padding: 8,
-    marginBottom: 8,
-    marginRight: 10,
-  },
-  filePreviewImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
-    marginRight: 8,
-  },
-  filePreviewTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexShrink: 1,
-  },
-  filePreviewText: {
-    fontSize: 14,
-    marginLeft: 5,
-    flexShrink: 1,
-  },
-  clearFileButton: {
-    marginLeft: 8,
-    padding: 4,
   },
   attachButton: {
     padding: 8,
