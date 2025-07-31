@@ -1,17 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  ActivityIndicator,
-  StyleSheet,
-  Image,
-  Alert,
-} from 'react-native';
+import { View, Text, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, StyleSheet, Image, Alert, StatusBar } from 'react-native';
 import ChatMessageBubble from '../components/ChatMessageBubble';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -239,7 +227,7 @@ const TicketChatScreen = ({ route, navigation }) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      keyboardVerticalOffset={0}
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -254,6 +242,7 @@ const TicketChatScreen = ({ route, navigation }) => {
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
         inverted={true}
+        style={{ flex: 1 }} // Add flex: 1 here
       />
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={handleFileSelect} style={styles.attachButton}>

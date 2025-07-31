@@ -101,7 +101,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 12,
+    paddingVertical: 2, // Drastically reduced from 5
     backgroundColor: 'rgba(0,0,0,0.5)',
   },
   headerButton: {
