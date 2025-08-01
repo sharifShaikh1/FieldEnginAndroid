@@ -180,7 +180,7 @@ const ProfileScreen = ({ navigation }) => {
       <ScrollView className="p-4">
         <Text className="text-3xl font-bold text-center text-gray-900 mb-6">My Profile</Text>
 
-        {renderSection('Personal Details', (
+        {profile.fullName && renderSection('Personal Details', (
           <>
             {renderDetail('Full Name', profile.fullName)}
             {renderDetail('Email', profile.email)}

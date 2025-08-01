@@ -299,6 +299,7 @@ const HomeScreen = ({ navigation }) => {
         contentContainerStyle={{ paddingHorizontal: 16, paddingVertical: 20 }}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#4F46E5']} tintColor={'#4F46E5'} />}
       >
+        <View>
         <View className="flex-row justify-between items-center mb-6">
           <View>
             <Text className="text-lg text-gray-500">Welcome Back,</Text>
@@ -315,7 +316,7 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         {loading && !refreshing ? <ActivityIndicator size="large" color="#4F46E5" className="my-16" /> : (
-          <>
+          <View>
             {pendingAssignments.length > 0 && (
               <View className="mb-6">
                 {pendingAssignments.map(ticket => (
@@ -339,8 +340,9 @@ const HomeScreen = ({ navigation }) => {
               <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Profile')} />
               <StatCard label="Completed" value={stats.totalClosedTickets} icon="archive" color="#6B7280" onPress={() => navigation.navigate('History')} />
             </View>
-          </>
+          </View>
         )}
+        </View>
       </ScrollView>
     </SafeAreaView>
 

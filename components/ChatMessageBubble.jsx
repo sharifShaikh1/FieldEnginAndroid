@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import ImageViewer from './ImageViewer';
 
-const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversationId }) => {
+const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversationId, onReplySwipe }) => {
   const hasFile = !!msg.fileKey;
   const hasText = !!msg.text;
   const isOptimistic = !!msg.tempId && !msg._id;
@@ -127,31 +128,53 @@ const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversation
 
   return (
     <>
-      <View style={[styles.bubbleContainer, isImageOnly ? {} : (isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)]}>
-        {isImageOnly ? (
-          <TouchableOpacity onPress={handleFilePress} disabled={isLoadingFile || fileError}>
-            {renderFileContent()}
-            <View style={[styles.timestampOverlay, isMyMessage ? { right: 8 } : { left: 8 }]}>
-              <Text style={styles.overlayTimestamp}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-              {isOptimistic && <Ionicons name="time-outline" size={12} color={'#fff'} style={{ marginLeft: 4 }} />}
-            </View>
-          </TouchableOpacity>
-        ) : (
-          <>
-            {!isMyMessage && <Text style={styles.senderName}>{msg.senderId?.fullName}</Text>}
-            {hasFile && (
-              <TouchableOpacity onPress={handleFilePress} disabled={isLoadingFile || fileError}>
-                {renderFileContent()}
-              </TouchableOpacity>
-            )}
-            {hasText && <Text style={styles.messageText}>{msg.text}</Text>}
-            <View style={styles.bottomRow}>
-              {isOptimistic && <Ionicons name="time-outline" size={12} color={'rgba(0,0,0,0.5)'} style={styles.optimisticIcon} />}
-              <Text style={styles.timestamp}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
-            </View>
-          </>
-        )}
-      </View>
+      <PanGestureHandler onGestureEvent={(e) => {
+        if (e.nativeEvent.state === State.ACTIVE && Math.abs(e.nativeEvent.translationX) > 20) {
+          onReplySwipe(msg);
+        }
+      }} activeOffsetX={[-20, 20]}>
+        <View style={[styles.bubbleContainer, isImageOnly ? {} : (isMyMessage ? styles.myMessageBubble : styles.otherMessageBubble)]}>
+          {isImageOnly ? (
+            <TouchableOpacity onPress={handleFilePress} disabled={isLoadingFile || fileError}>
+              {msg.replyTo && (
+                <View style={[styles.replyToContainer, isMyMessage ? styles.myReplyToContainer : styles.otherReplyToContainer]}>
+                  <Text style={[styles.replyToSender, isMyMessage ? styles.myReplyToSender : styles.otherReplyToSender]}>{msg.replyTo.senderId?.fullName}</Text>
+                  <Text style={[styles.replyToText, isMyMessage ? styles.myReplyToText : styles.otherReplyToText]} numberOfLines={1}>
+                    {msg.replyTo.text || (msg.replyTo.fileType?.startsWith('image/') ? 'Image' : 'File')}
+                  </Text>
+                </View>
+              )}
+              {renderFileContent()}
+              <View style={[styles.timestampOverlay, isMyMessage ? { right: 8 } : { left: 8 }]}>
+                <Text style={styles.overlayTimestamp}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                {isOptimistic && <Ionicons name="time-outline" size={12} color={'#fff'} style={{ marginLeft: 4 }} />}
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <>
+              {!isMyMessage && <Text style={styles.senderName}>{msg.senderId?.fullName}</Text>}
+              {msg.replyTo && (
+                <View style={[styles.replyToContainer, isMyMessage ? styles.myReplyToContainer : styles.otherReplyToContainer]}>
+                  <Text style={[styles.replyToSender, isMyMessage ? styles.myReplyToSender : styles.otherReplyToSender]}>{msg.replyTo.senderId?.fullName}</Text>
+                  <Text style={[styles.replyToText, isMyMessage ? styles.myReplyToText : styles.otherReplyToText]} numberOfLines={1}>
+                    {msg.replyTo.text || (msg.replyTo.fileType?.startsWith('image/') ? 'Image' : 'File')}
+                  </Text>
+                </View>
+              )}
+              {hasFile && (
+                <TouchableOpacity onPress={handleFilePress} disabled={isLoadingFile || fileError}>
+                  {renderFileContent()}
+                </TouchableOpacity>
+              )}
+              {hasText && <Text style={styles.messageText}>{msg.text}</Text>}
+              <View style={styles.bottomRow}>
+                {isOptimistic && <Ionicons name="time-outline" size={12} color={'rgba(0,0,0,0.5)'} style={styles.optimisticIcon} />}
+                <Text style={styles.timestamp}>{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+              </View>
+            </>
+          )}
+        </View>
+      </PanGestureHandler>
       {isViewerVisible && (
         <ImageViewer
           visible={isViewerVisible}
@@ -165,6 +188,7 @@ const ChatMessageBubble = ({ msg, isMyMessage, token, API_BASE_URL, conversation
     </>
   );
 };
+
 
 const styles = StyleSheet.create({
   bubbleContainer: {
@@ -287,6 +311,43 @@ const styles = StyleSheet.create({
   overlayTimestamp: {
     color: '#fff',
     fontSize: 10,
+  },
+  replyToContainer: {
+    padding: 8,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    borderRadius: 8,
+    marginBottom: 4,
+    borderLeftWidth: 3,
+    borderLeftColor: '#007AFF',
+  },
+  myReplyToContainer: {
+    backgroundColor: 'rgba(0,122,255,0.1)',
+    borderLeftColor: '#007AFF',
+  },
+  otherReplyToContainer: {
+    backgroundColor: 'rgba(200,200,200,0.2)',
+    borderLeftColor: '#888',
+  },
+  replyToSender: {
+    fontWeight: 'bold',
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  myReplyToSender: {
+    color: '#007AFF',
+  },
+  otherReplyToSender: {
+    color: '#555',
+  },
+  replyToText: {
+    fontSize: 12,
+    color: '#555',
+  },
+  myReplyToText: {
+    color: '#333',
+  },
+  otherReplyToText: {
+    color: '#666',
   },
 });
 

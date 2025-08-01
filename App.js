@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { AuthProvider, useAuth } from './context/AuthContext'; // Import the provider and hook
 import { SocketProvider } from './context/SocketContext'; // Import the SocketProvider
 import { Linking, Text } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
@@ -49,26 +50,30 @@ const AppContent = () => {
         <Stack.Screen name="AppNavigator" component={AppNavigator}  />
       ) : (
         // If no token, show the authentication screens.
-        <>
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="Register" component={RegisterScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
-        </>
+        [
+          <Stack.Screen key="Login" name="Login" component={LoginScreen} />,
+          <Stack.Screen key="Register" name="Register" component={RegisterScreen} />,
+          <Stack.Screen key="ForgotPassword" name="ForgotPassword" component={ForgotPasswordScreen} />,
+          <Stack.Screen key="ResetPassword" name="ResetPassword" component={ResetPasswordScreen} />
+        ]
       )}
     </Stack.Navigator>
   );
 };
 
 // The main App component now just sets up the providers
-export default function App() {
+function App() {
   return (
-    <AuthProvider>
-      <SocketProvider>
-        <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-          <AppContent />
-        </NavigationContainer>
-      </SocketProvider>
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <SocketProvider>
+          <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+            <AppContent />
+          </NavigationContainer>
+        </SocketProvider>
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
+
+export default App;

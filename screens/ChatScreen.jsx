@@ -9,8 +9,7 @@ import { API_BASE_URL } from '../config/apiConfig';
 const ChatScreen = ({ route, navigation }) => {
   const { ticketId, receiverId, chatTitle } = route.params;
   const socket = useSocket();
-  const { user } = useAuth();
-  const { token } = useAuth(); // Get token from useAuth
+  const { user, token } = useAuth();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -150,6 +149,7 @@ const ChatScreen = ({ route, navigation }) => {
       fileType: fileType,
       originalFileName: originalFileName,
       tempId: Date.now().toString(),
+      replyTo: replyingToMessage ? replyingToMessage._id : undefined,
     };
 
     setMessages((prevMessages) => [
@@ -358,6 +358,32 @@ const styles = StyleSheet.create({
   attachButton: {
     padding: 8,
     marginRight: 5,
+  },
+  replyPreviewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e0e0e0',
+    padding: 8,
+    borderRadius: 10,
+    marginBottom: 8,
+    marginHorizontal: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+  },
+  replyPreviewContent: {
+    flex: 1,
+    marginRight: 10,
+  },
+  replyPreviewHeader: {
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 2,
+  },
+  replyPreviewText: {
+    color: '#555',
+  },
+  clearReplyButton: {
+    padding: 5,
   },
 });
 

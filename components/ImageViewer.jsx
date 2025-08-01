@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, Image, Modal, SafeAreaView, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  Modal,
+  SafeAreaView,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Sharing from 'expo-sharing';
 import * as MediaLibrary from 'expo-media-library';
@@ -62,10 +72,11 @@ const ImageViewer = ({ visible, onClose, imageUri, senderName, timestamp, isLoad
         </View>
 
         <View style={styles.imageContainer}>
-          {isLoading || isSaving ? (
-            <ActivityIndicator size="large" color="#fff" />
-          ) : (
-            <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
+          <Image source={{ uri: imageUri }} style={styles.image} resizeMode="contain" />
+          {(isLoading || isSaving) && (
+            <View style={StyleSheet.absoluteFill}>
+              <ActivityIndicator size="large" color="#fff" />
+            </View>
           )}
         </View>
 

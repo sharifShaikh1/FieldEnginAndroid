@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, StyleSheet, Image, Alert, StatusBar } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, ActivityIndicator, StyleSheet,FlatList, Image, Alert,KeyboardAvoidingView, StatusBar } from 'react-native';
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
 import ChatMessageBubble from '../components/ChatMessageBubble';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -18,7 +19,13 @@ const TicketChatScreen = ({ route, navigation }) => {
   const [filePreview, setFilePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [conversationId, setConversationId] = useState(null);
+  const [replyingToMessage, setReplyingToMessage] = useState(null); // New state for reply
   const flatListRef = useRef(null);
+
+  const onReplySwipe = useCallback((message) => {
+    setReplyingToMessage(message);
+    // Optionally scroll to input field
+  }, []);
 
   useEffect(() => {
     if (!socket || !user || !ticketId) return;
@@ -171,6 +178,7 @@ const TicketChatScreen = ({ route, navigation }) => {
           originalFileName: msg.originalFileName,
           tempId: msg.tempId,
           groupId: msg.groupId,
+          replyTo: replyingToMessage ? replyingToMessage._id : undefined, // Add replyTo
         };
 
         socket.emit('sendMessage', messagePayload, (response) => {
@@ -180,6 +188,7 @@ const TicketChatScreen = ({ route, navigation }) => {
                 m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m
               )
             );
+            setReplyingToMessage(null); // Reset replyingToMessage on success
           } else {
             console.error('Failed to send message:', response.message);
             setMessages((prevMessages) => prevMessages.filter((m) => m.tempId !== msg.tempId));
@@ -209,6 +218,7 @@ const TicketChatScreen = ({ route, navigation }) => {
           token={token}
           API_BASE_URL={API_BASE_URL}
           conversationId={conversationId}
+          onReplySwipe={onReplySwipe}
         />
       </View>
     );
@@ -227,7 +237,10 @@ const TicketChatScreen = ({ route, navigation }) => {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-      keyboardVerticalOffset={0}
+      keyboardVerticalOffset={Platform.select({
+        ios: 90, // Adjust this value as needed for iOS
+        android: 0, // Often 0 for Android with 'padding' behavior
+      })}
     >
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
@@ -244,8 +257,23 @@ const TicketChatScreen = ({ route, navigation }) => {
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
         inverted={true}
-        style={{ flex: 1 }} // Add flex: 1 here
+        style={{ flex: 1 }} // Correctly apply flex: 1 here
       />
+      {replyingToMessage && (
+        <View style={styles.replyPreviewContainer}>
+          <View style={styles.replyPreviewContent}>
+            <Text style={styles.replyPreviewHeader}>
+              Replying to {replyingToMessage.senderId?.fullName || 'User'}
+            </Text>
+            <Text style={styles.replyPreviewText} numberOfLines={1}>
+              {replyingToMessage.text || (replyingToMessage.fileKey ? 'File' : '')}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => setReplyingToMessage(null)} style={styles.clearReplyButton}>
+            <Ionicons name="close-circle" size={24} color="#555" />
+          </TouchableOpacity>
+        </View>
+      )}
       <View style={styles.inputContainer}>
         <TouchableOpacity onPress={handleFileSelect} style={styles.attachButton}>
           <Ionicons name="attach" size={24} color="#555" />
@@ -328,6 +356,32 @@ const styles = StyleSheet.create({
   attachButton: {
     padding: 8,
     marginRight: 5,
+  },
+  replyPreviewContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#e0e0e0',
+    padding: 8,
+    borderRadius: 10,
+    marginBottom: 8,
+    marginHorizontal: 10,
+    borderLeftWidth: 4,
+    borderLeftColor: '#007AFF',
+  },
+  replyPreviewContent: {
+    flex: 1,
+    marginRight: 10,
+  },
+  replyPreviewHeader: {
+    fontWeight: 'bold',
+    color: '#007AFF',
+    marginBottom: 2,
+  },
+  replyPreviewText: {
+    color: '#555',
+  },
+  clearReplyButton: {
+    padding: 5,
   },
 });
 
