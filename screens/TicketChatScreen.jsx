@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Platform, ActivityIndicator, StyleSheet,FlatList, Image, Alert,KeyboardAvoidingView, StatusBar } from 'react-native';
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view';
+import {
+  View, Text, TextInput, TouchableOpacity, Platform,
+  ActivityIndicator, StyleSheet, Image, Alert,
+  FlatList, Animated, Keyboard
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import ChatMessageBubble from '../components/ChatMessageBubble';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -13,18 +17,46 @@ const TicketChatScreen = ({ route, navigation }) => {
   const { ticketId, chatTitle } = route.params;
   const socket = useSocket();
   const { user, token } = useAuth();
+
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [filePreview, setFilePreview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [conversationId, setConversationId] = useState(null);
-  const [replyingToMessage, setReplyingToMessage] = useState(null); // New state for reply
+  const [replyingToMessage, setReplyingToMessage] = useState(null);
   const flatListRef = useRef(null);
+  const keyboardHeight = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      (e) => {
+        Animated.timing(keyboardHeight, {
+          toValue: e.endCoordinates.height,
+          duration: 250,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        Animated.timing(keyboardHeight, {
+          toValue: 0,
+          duration: 250,
+          useNativeDriver: false,
+        }).start();
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, [keyboardHeight]);
 
   const onReplySwipe = useCallback((message) => {
     setReplyingToMessage(message);
-    // Optionally scroll to input field
   }, []);
 
   useEffect(() => {
@@ -32,16 +64,13 @@ const TicketChatScreen = ({ route, navigation }) => {
 
     socket.emit('joinTicketRoom', ticketId, (response) => {
       if (response.success) {
-        console.log(`Joined ticket room: ${ticketId}`);
         socket.emit('fetchMessages', { ticketId }, (res) => {
           if (res.messages) {
             setMessages(res.messages.reverse());
             setConversationId(res.conversationId);
             setLoading(false);
             setTimeout(() => {
-              if (flatListRef.current) {
-                flatListRef.current.scrollToOffset({ offset: 0, animated: false });
-              }
+              flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
             }, 100);
           }
         });
@@ -53,33 +82,25 @@ const TicketChatScreen = ({ route, navigation }) => {
 
     const handleReceiveMessage = (message) => {
       setMessages((prevMessages) => {
-        const existingIndex = prevMessages.findIndex(msg => msg.tempId === message.tempId);
-        if (existingIndex > -1) {
-          const updatedMessages = [...prevMessages];
-          updatedMessages[existingIndex] = { ...message, tempId: undefined };
-          return updatedMessages;
-        } else {
-          return [message, ...prevMessages];
+        const index = prevMessages.findIndex(msg => msg.tempId === message.tempId);
+        if (index > -1) {
+          const updated = [...prevMessages];
+          updated[index] = { ...message, tempId: undefined };
+          return updated;
         }
+        return [message, ...prevMessages];
       });
-      if (flatListRef.current) {
-        flatListRef.current.scrollToOffset({ offset: 0, animated: true });
-      }
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
     };
 
     socket.on('receiveMessage', handleReceiveMessage);
-
-    return () => {
-      socket.off('receiveMessage', handleReceiveMessage);
-    };
+    return () => socket.off('receiveMessage', handleReceiveMessage);
   }, [socket, user, ticketId]);
 
   const fileToBase64 = async (uri) => {
     try {
-      const base64 = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
-      return base64;
+      return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
     } catch (err) {
-      console.error("Error converting file to base64:", err);
       throw new Error(`Failed to convert file to base64: ${err.message}`);
     }
   };
@@ -95,7 +116,7 @@ const TicketChatScreen = ({ route, navigation }) => {
       if (!result.canceled) {
         const validAssets = result.assets.filter(asset => {
           if (asset.size > 5 * 1024 * 1024) {
-            Alert.alert("File Too Large", `File ${asset.name} exceeds the 5MB limit.`);
+            Alert.alert("File Too Large", `${asset.name} exceeds the 5MB limit.`);
             return false;
           }
           return true;
@@ -103,28 +124,20 @@ const TicketChatScreen = ({ route, navigation }) => {
 
         if (validAssets.length > 0) {
           setSelectedFile(validAssets);
-          setFilePreview(validAssets[0].uri);
         } else {
           setSelectedFile(null);
-          setFilePreview(null);
         }
       }
     } catch (err) {
-      console.error("Error picking document:", err);
       Alert.alert("Error", "Could not select file.");
     }
-  };
-
-  const clearFile = () => {
-    setSelectedFile(null);
-    setFilePreview(null);
   };
 
   const sendMessage = useCallback(async () => {
     if (!socket || (!newMessage.trim() && (!selectedFile || selectedFile.length === 0))) return;
 
-    const currentTimestamp = new Date().toISOString();
-    const newGroupId = selectedFile && selectedFile.length > 1 ? Date.now().toString() : undefined;
+    const timestamp = new Date().toISOString();
+    const groupId = selectedFile?.length > 1 ? Date.now().toString() : undefined;
 
     const messagesToSend = [];
 
@@ -134,34 +147,32 @@ const TicketChatScreen = ({ route, navigation }) => {
         _id: tempId,
         text: newMessage.trim(),
         senderId: { _id: user.id, fullName: user.fullName, role: user.role },
-        timestamp: currentTimestamp,
-        tempId: tempId,
-        groupId: newGroupId,
+        timestamp,
+        tempId,
+        groupId,
       });
     }
 
-    if (selectedFile && selectedFile.length > 0) {
+    if (selectedFile?.length > 0) {
       for (const file of selectedFile) {
         const tempId = Date.now().toString() + '_' + file.name;
         messagesToSend.push({
           _id: tempId,
           text: '',
           senderId: { _id: user.id, fullName: user.fullName, role: user.role },
-          timestamp: currentTimestamp,
-          tempId: tempId,
+          timestamp,
+          tempId,
           fileKey: file.uri,
           fileType: file.mimeType,
           originalFileName: file.name,
-          groupId: newGroupId,
+          groupId,
         });
       }
     }
 
-    setMessages((prevMessages) => [...messagesToSend, ...prevMessages]);
-
+    setMessages((prev) => [...messagesToSend, ...prev]);
     setNewMessage('');
     setSelectedFile(null);
-    setFilePreview(null);
 
     for (const msg of messagesToSend) {
       try {
@@ -170,51 +181,47 @@ const TicketChatScreen = ({ route, navigation }) => {
           fileData = await fileToBase64(msg.fileKey);
         }
 
-        const messagePayload = {
+        const payload = {
           text: msg.text,
-          ticketId: ticketId,
-          fileData: fileData,
+          ticketId,
+          fileData,
           fileType: msg.fileType,
           originalFileName: msg.originalFileName,
           tempId: msg.tempId,
           groupId: msg.groupId,
-          replyTo: replyingToMessage ? replyingToMessage._id : undefined, // Add replyTo
+          replyTo: replyingToMessage?._id,
         };
 
-        socket.emit('sendMessage', messagePayload, (response) => {
+        socket.emit('sendMessage', payload, (response) => {
           if (response.success) {
-            setMessages((prevMessages) =>
-              prevMessages.map((m) =>
-                m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m
-              )
+            setMessages((prev) =>
+              prev.map((m) => (m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m))
             );
-            setReplyingToMessage(null); // Reset replyingToMessage on success
+            setReplyingToMessage(null);
           } else {
-            console.error('Failed to send message:', response.message);
-            setMessages((prevMessages) => prevMessages.filter((m) => m.tempId !== msg.tempId));
+            setMessages((prev) => prev.filter((m) => m.tempId !== msg.tempId));
             Alert.alert("Send Error", "Could not send the message.");
           }
         });
-      } catch (error) {
-        console.error("Error processing file or sending message:", error);
-        setMessages((prevMessages) => prevMessages.filter((m) => m.tempId !== msg.tempId));
-        Alert.alert("Error", "Could not process the file for sending.");
+      } catch (err) {
+        setMessages((prev) => prev.filter((m) => m.tempId !== msg.tempId));
+        Alert.alert("Error", "File sending failed.");
       }
     }
-  }, [socket, newMessage, selectedFile, ticketId, user]);
+  }, [socket, newMessage, selectedFile, replyingToMessage]);
 
   const renderMessage = ({ item }) => {
-    const isMyMessage = item.senderId._id === user.id;
+    const isMine = item.senderId._id === user.id;
     return (
       <View style={{
         flexDirection: 'row',
-        justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
+        justifyContent: isMine ? 'flex-end' : 'flex-start',
         marginVertical: 4,
         paddingHorizontal: 10,
       }}>
         <ChatMessageBubble
           msg={item}
-          isMyMessage={isMyMessage}
+          isMyMessage={isMine}
           token={token}
           API_BASE_URL={API_BASE_URL}
           conversationId={conversationId}
@@ -226,30 +233,27 @@ const TicketChatScreen = ({ route, navigation }) => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <SafeAreaView style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#0000ff" />
         <Text>Loading chat...</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'padding'}
-      keyboardVerticalOffset={Platform.select({
-        ios: 90, // Adjust this value as needed for iOS
-        android: 0, // Often 0 for Android with 'padding' behavior
-      })}
-    >
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('ParticipantList', { ticketId: ticketId })} style={styles.headerTitleContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ParticipantList', { ticketId })}
+          style={styles.headerTitleContainer}
+        >
           <Text style={styles.headerTitle}>{chatTitle || 'Ticket Chat'}</Text>
         </TouchableOpacity>
       </View>
+
       <FlatList
         ref={flatListRef}
         data={messages}
@@ -257,48 +261,49 @@ const TicketChatScreen = ({ route, navigation }) => {
         renderItem={renderMessage}
         contentContainerStyle={styles.messagesContainer}
         inverted={true}
-        style={{ flex: 1 }} // Correctly apply flex: 1 here
+        style={{ flex: 1 }}
       />
-      {replyingToMessage && (
-        <View style={styles.replyPreviewContainer}>
-          <View style={styles.replyPreviewContent}>
-            <Text style={styles.replyPreviewHeader}>
-              Replying to {replyingToMessage.senderId?.fullName || 'User'}
-            </Text>
-            <Text style={styles.replyPreviewText} numberOfLines={1}>
-              {replyingToMessage.text || (replyingToMessage.fileKey ? 'File' : '')}
-            </Text>
+
+      <Animated.View style={{ paddingBottom: keyboardHeight }}>
+        {replyingToMessage && (
+          <View style={styles.replyPreviewContainer}>
+            <View style={styles.replyPreviewContent}>
+              <Text style={styles.replyPreviewHeader}>
+                Replying to {replyingToMessage.senderId?.fullName || 'User'}
+              </Text>
+              <Text style={styles.replyPreviewText} numberOfLines={1}>
+                {replyingToMessage.text || (replyingToMessage.fileKey ? 'File' : '')}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={() => setReplyingToMessage(null)} style={styles.clearReplyButton}>
+              <Ionicons name="close-circle" size={24} color="#555" />
+            </TouchableOpacity>
           </View>
-          <TouchableOpacity onPress={() => setReplyingToMessage(null)} style={styles.clearReplyButton}>
-            <Ionicons name="close-circle" size={24} color="#555" />
+        )}
+
+        <View style={styles.inputContainer}>
+          <TouchableOpacity onPress={handleFileSelect} style={styles.attachButton}>
+            <Ionicons name="attach" size={24} color="#555" />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.textInput}
+            value={newMessage}
+            onChangeText={setNewMessage}
+            placeholder="Type a message..."
+            placeholderTextColor="#888"
+            multiline
+          />
+          <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+            <Ionicons name="send" size={24} color="white" />
           </TouchableOpacity>
         </View>
-      )}
-      <View style={styles.inputContainer}>
-        <TouchableOpacity onPress={handleFileSelect} style={styles.attachButton}>
-          <Ionicons name="attach" size={24} color="#555" />
-        </TouchableOpacity>
-        <TextInput
-          style={styles.textInput}
-          value={newMessage}
-          onChangeText={setNewMessage}
-          placeholder="Type a message..."
-          placeholderTextColor="#888"
-          multiline
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-          <Ionicons name="send" size={24} color="white" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+      </Animated.View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f2f5',
-  },
+  container: { flex: 1, backgroundColor: '#f0f2f5' },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -306,15 +311,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-    paddingTop: Platform.OS === 'android' ? 40 : 50,
   },
-  backButton: {
-    marginRight: 10,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  backButton: { marginRight: 10 },
+  headerTitleContainer: { flex: 1 },
+  headerTitle: { fontSize: 18, fontWeight: 'bold' },
   messagesContainer: {
     paddingVertical: 10,
     paddingHorizontal: 10,

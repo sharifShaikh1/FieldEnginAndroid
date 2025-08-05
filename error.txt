@@ -1,5 +1,18 @@
 G  Socket.IO disconnected on cleanup.
- ERROR  Warning: TypeError: Cannot read property 'fullName' of undefined
+ ERROR  Warning: TypeError: _this.props.innerRef is not a function (it is Object)
+
+This error is located at:
+
+Call Stack
+  RNSScreenContainer (<anonymous>)
+  RNGestureHandlerRootView (<anonymous>)
+  AppNavigator (<anonymous>)
+  RNSScreenContainer (<anonymous>)
+  RNCSafeAreaProvider (<anonymous>)
+  RNGestureHandlerRootView (<anonymous>)
+  RNGestureHandlerRootView (<anonymous>)
+  App (<anonymous>)
+ ERROR  Warning: TypeError: _this.props.innerRef is not a function (it is Object)
 
 This error is located at:
 
