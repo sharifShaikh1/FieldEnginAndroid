@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, Platform,
-  ActivityIndicator, StyleSheet, Image, Alert,
-  FlatList, Animated, Keyboard
+  View, Text, TextInput, TouchableOpacity, ActivityIndicator,
+  StyleSheet, Alert, FlatList, Animated, Keyboard
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import ChatMessageBubble from '../components/ChatMessageBubble';
@@ -28,30 +27,25 @@ const TicketChatScreen = ({ route, navigation }) => {
   const keyboardHeight = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      (e) => {
-        Animated.timing(keyboardHeight, {
-          toValue: e.endCoordinates.height,
-          duration: 250,
-          useNativeDriver: false,
-        }).start();
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        Animated.timing(keyboardHeight, {
-          toValue: 0,
-          duration: 250,
-          useNativeDriver: false,
-        }).start();
-      }
-    );
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (e) => {
+      Animated.timing(keyboardHeight, {
+        toValue: e.endCoordinates.height,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    });
+
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      Animated.timing(keyboardHeight, {
+        toValue: 0,
+        duration: 250,
+        useNativeDriver: false,
+      }).start();
+    });
 
     return () => {
-      keyboardDidHideListener.remove();
       keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
     };
   }, [keyboardHeight]);
 
@@ -99,7 +93,9 @@ const TicketChatScreen = ({ route, navigation }) => {
 
   const fileToBase64 = async (uri) => {
     try {
-      return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+      return await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
     } catch (err) {
       throw new Error(`Failed to convert file to base64: ${err.message}`);
     }
@@ -110,10 +106,9 @@ const TicketChatScreen = ({ route, navigation }) => {
       const result = await DocumentPicker.getDocumentAsync({
         type: ['image/*', 'application/pdf'],
         copyToCacheDirectory: true,
-        multiple: true,
       });
 
-      if (!result.canceled) {
+      if (!result.canceled && result.assets?.length > 0) {
         const validAssets = result.assets.filter(asset => {
           if (asset.size > 5 * 1024 * 1024) {
             Alert.alert("File Too Large", `${asset.name} exceeds the 5MB limit.`);
@@ -146,7 +141,11 @@ const TicketChatScreen = ({ route, navigation }) => {
       messagesToSend.push({
         _id: tempId,
         text: newMessage.trim(),
-        senderId: { _id: user.id, fullName: user.fullName, role: user.role },
+        senderId: {
+          _id: user._id,
+          fullName: user.fullName,
+          role: user.role
+        },
         timestamp,
         tempId,
         groupId,
@@ -159,7 +158,11 @@ const TicketChatScreen = ({ route, navigation }) => {
         messagesToSend.push({
           _id: tempId,
           text: '',
-          senderId: { _id: user.id, fullName: user.fullName, role: user.role },
+          senderId: {
+            _id: user._id,
+            fullName: user.fullName,
+            role: user.role
+          },
           timestamp,
           tempId,
           fileKey: file.uri,
@@ -195,7 +198,9 @@ const TicketChatScreen = ({ route, navigation }) => {
         socket.emit('sendMessage', payload, (response) => {
           if (response.success) {
             setMessages((prev) =>
-              prev.map((m) => (m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m))
+              prev.map((m) =>
+                m.tempId === msg.tempId ? { ...response.message, tempId: undefined } : m
+              )
             );
             setReplyingToMessage(null);
           } else {
@@ -211,7 +216,7 @@ const TicketChatScreen = ({ route, navigation }) => {
   }, [socket, newMessage, selectedFile, replyingToMessage]);
 
   const renderMessage = ({ item }) => {
-    const isMine = item.senderId._id === user.id;
+    const isMine = item.senderId._id === user._id;
     return (
       <View style={{
         flexDirection: 'row',

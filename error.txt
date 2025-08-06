@@ -1,27 +1,11 @@
-G  Socket.IO disconnected on cleanup.
- ERROR  Warning: TypeError: _this.props.innerRef is not a function (it is Object)
+OG  Background tracking is already active for the correct ticket: 686fbe767a7d6edbdbb95755
+ LOG  Socket.IO disconnected: io client disconnect
+ LOG  Socket.IO disconnected on cleanup.
+ ERROR  Warning: ReferenceError: Property 'fetchUser' doesn't exist
 
 This error is located at:
 
 Call Stack
-  RNSScreenContainer (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  AppNavigator (<anonymous>)
-  RNSScreenContainer (<anonymous>)
-  RNCSafeAreaProvider (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
   RNGestureHandlerRootView (<anonymous>)
   App (<anonymous>)
- ERROR  Warning: TypeError: _this.props.innerRef is not a function (it is Object)
 
-This error is located at:
-
-Call Stack
-  RNSScreenContainer (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  AppNavigator (<anonymous>)
-  RNSScreenContainer (<anonymous>)
-  RNCSafeAreaProvider (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  RNGestureHandlerRootView (<anonymous>)
-  App (<anonymous>)

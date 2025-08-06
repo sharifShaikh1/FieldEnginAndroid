@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import AvailableTicketsScreen from '../screens/AvailableTicketsScreen';
 import TicketHistoryScreen from '../screens/TicketHistoryScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import PayoutsScreen from '../screens/PayoutsScreen';
 import CertificatesScreen from '../screens/CertificatesScreen';
 import CertificateDetailScreen from '../screens/CertificateDetailScreen';
 import ChatScreen from '../screens/ChatScreen';
@@ -24,6 +25,7 @@ const TabNavigator = () => {
           let iconName;
           if (route.name === 'Dashboard') iconName = focused ? 'home' : 'home-outline';
           else if (route.name === 'History') iconName = focused ? 'time' : 'time-outline';
+          else if (route.name === 'Payouts') iconName = focused ? 'wallet' : 'wallet-outline';
           else if (route.name === 'Profile') iconName = focused ? 'person-circle' : 'person-circle-outline';
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -36,6 +38,7 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="Dashboard" component={HomeScreen} />
       <Tab.Screen name="History" component={TicketHistoryScreen} options={{ title: 'History' }} />
+      <Tab.Screen name="Payouts" component={PayoutsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

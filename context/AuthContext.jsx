@@ -63,6 +63,22 @@ export const AuthProvider = ({ children }) => {
   });
 
   const [isDashboardLoading, setIsDashboardLoading] = useState(true);
+
+  const fetchUser = useCallback(async () => {
+    if (!token) return;
+    try {
+      const response = await api.get('/auth/me');
+      const updatedUser = response.data;
+      setUser(updatedUser);
+      await AsyncStorage.setItem('user', JSON.stringify(updatedUser));
+    } catch (error) {
+      console.error("Failed to fetch user data in AuthContext:", error);
+      if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+        console.warn("Authentication failed during user fetch, logging out.");
+        await logout();
+      }
+    }
+  }, [token]);
   const [pendingTrackingTicketId, setPendingTrackingTicketId] = useState(null);
 
   useEffect(() => {
@@ -319,7 +335,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
 
-    <AuthContext.Provider value={{ user, token, isLoading, login, logout, dashboardData, isDashboardLoading, fetchDashboardData, startBackgroundTracking }}>
+    <AuthContext.Provider value={{ user, token, isLoading, login, logout, fetchUser, dashboardData, isDashboardLoading, fetchDashboardData, startBackgroundTracking }}>
 
       {children}
 

@@ -126,7 +126,7 @@ const stopBackgroundTracking = async () => {
 
 const HomeScreen = ({ navigation }) => {
 
-    const { user } = useAuth();
+    const { user } = useAuth() || {};
 
     const [pendingAssignments, setPendingAssignments] = useState([]);
 

@@ -4,6 +4,7 @@
 const locations = {
   LOCATION_A: 'http://192.168.0.108:8021', 
   LOCATION_B: 'http://192.168.1.241:8021', 
+  LOCATION_C: 'http://10.33.242.91:8021',
 };
 
 // --- THIS IS THE ONLY LINE YOU NEED TO CHANGE WHEN YOU SWITCH NETWORKS ---
