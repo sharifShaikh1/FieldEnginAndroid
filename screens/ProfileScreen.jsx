@@ -218,7 +218,7 @@ const ProfileScreen = ({ navigation }) => {
               className="bg-indigo-600 rounded-lg p-3 mt-4 flex-row items-center justify-center"
               onPress={() => navigation.navigate('Certificates', { certificates: profile.certificates })}
             >
-              <Text className="text-white text-center text-base font-bold">View Certificates</Text>
+              <Text className="text-white text-center text-base font-bold">View & Manage Certificates</Text>
             </TouchableOpacity>
           </View>
         ))}
