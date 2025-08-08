@@ -1,11 +1,17 @@
-OG  Background tracking is already active for the correct ticket: 686fbe767a7d6edbdbb95755
- LOG  Socket.IO disconnected: io client disconnect
- LOG  Socket.IO disconnected on cleanup.
- ERROR  Warning: ReferenceError: Property 'fetchUser' doesn't exist
+OR  An effect function must not return anything besides a function, which is used for clean-up.
 
-This error is located at:
+It looks like you wrote 'useFocusEffect(async () => ...)' or returned a Promise. Instead, write the async function inside your effect and call it immediately:
 
-Call Stack
-  RNGestureHandlerRootView (<anonymous>)
-  App (<anonymous>)
+useFocusEffect(
+  React.useCallback(() => {
+    async function fetchData() {
+      // You can await here
+      const response = await MyAPI.getData(someId);
+      // ...
+    }
 
+    fetchData();
+  }, [someId])
+);
+
+See usage guide: https://reactnavigation.org/docs/use-focus-effect

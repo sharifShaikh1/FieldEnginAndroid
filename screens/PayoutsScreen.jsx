@@ -28,14 +28,24 @@ const PayoutsScreen = () => {
         }
 
         try {
-            const { data } = await api.post('/stripe/onboard-user', { userId: user._id, source: 'mobile' });
+            let endpoint = '/stripe/onboard-user';
+            let payload = { userId: user._id, source: 'mobile' };
+
+            // If user already has a Stripe ID, create a login link instead
+            if (user.stripeAccountId) {
+                endpoint = '/stripe/create-login-link';
+                payload = { userId: user._id };
+            }
+
+            const { data } = await api.post(endpoint, payload);
+
             if (data.url) {
                 Linking.openURL(data.url);
             } else {
-                Alert.alert("Error", "Could not get onboarding link. Please try again.");
+                Alert.alert("Error", "Could not get the Stripe link. Please try again.");
             }
         } catch (err) {
-            Alert.alert("Onboarding Failed", err.response?.data?.message || "An unexpected error occurred.");
+            Alert.alert("Action Failed", err.response?.data?.message || "An unexpected error occurred.");
         }
     };
 

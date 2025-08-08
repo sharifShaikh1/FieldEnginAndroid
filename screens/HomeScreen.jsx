@@ -337,7 +337,7 @@ const HomeScreen = ({ navigation }) => {
 
             <View className="flex-row justify-around">
               <StatCard label="Available" value={stats.available} icon="list" color="#3B82F6" onPress={() => navigation.navigate('Available')} />
-              <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Profile')} />
+              <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Payments')} />
               <StatCard label="Completed" value={stats.totalClosedTickets} icon="archive" color="#6B7280" onPress={() => navigation.navigate('History')} />
             </View>
           </View>

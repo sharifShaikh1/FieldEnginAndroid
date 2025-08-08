@@ -2,6 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 
 const TicketCard = ({ ticket, onAction, actionLabel, hasRequested }) => {
+  const isClosed = ticket.status === 'Closed';
+  const isPaid = ticket.paymentStatus === 'Paid';
+
   return (
     <View className="bg-white p-5 rounded-xl shadow-sm mb-4 border border-gray-200">
       <View className="flex-row justify-between items-center">
@@ -19,14 +22,25 @@ const TicketCard = ({ ticket, onAction, actionLabel, hasRequested }) => {
         ))}
       </View>
 
+      {/* Show payment status for closed tickets */}
+      {isClosed && (
+        <View className={`mt-4 p-2 rounded-lg items-center ${isPaid ? 'bg-green-100' : 'bg-yellow-100'}`}>
+          <Text className={`font-bold ${isPaid ? 'text-green-700' : 'text-yellow-700'}`}>
+            Payment Status: {ticket.paymentStatus}
+          </Text>
+        </View>
+      )}
+
       {/* Button with dynamic state */}
-      <TouchableOpacity
-        onPress={onAction}
-        disabled={hasRequested}
-        className={`${hasRequested ? 'bg-gray-300' : 'bg-indigo-600'} mt-4 p-4 rounded-lg items-center`}
-      >
-        <Text className="text-white font-bold">{hasRequested ? 'Access Requested' : actionLabel}</Text>
-      </TouchableOpacity>
+      {onAction && (
+        <TouchableOpacity
+          onPress={onAction}
+          disabled={hasRequested}
+          className={`${hasRequested ? 'bg-gray-300' : 'bg-indigo-600'} mt-4 p-4 rounded-lg items-center`}
+        >
+          <Text className="text-white font-bold">{hasRequested ? 'Access Requested' : actionLabel}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
