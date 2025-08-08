@@ -1,5 +1,5 @@
 import type { ViewStyle } from 'react-native';
-declare type FiltersArray = readonly ((style: keyof ViewStyle) => boolean)[];
+type FiltersArray = readonly ((style: keyof ViewStyle) => boolean)[];
 /**
  * Utility function to extract styles in separate objects
  *

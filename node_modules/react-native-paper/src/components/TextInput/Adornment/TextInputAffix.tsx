@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   Animated,
+  DimensionValue,
   GestureResponderEvent,
   LayoutChangeEvent,
   Pressable,
@@ -47,7 +48,7 @@ type ContextState = {
   visible?: Animated.Value;
   textStyle?: StyleProp<TextStyle>;
   side: AdornmentSide;
-  paddingHorizontal?: number | string;
+  paddingHorizontal?: DimensionValue;
   maxFontSizeMultiplier?: number | undefined | null;
   testID?: string;
   disabled?: boolean;
@@ -153,7 +154,18 @@ const TextInputAffix = ({
 
   const textColor = getTextColor({ theme, disabled });
 
-  const affix = (
+  const content = (
+    <Text
+      maxFontSizeMultiplier={maxFontSizeMultiplier}
+      style={[{ color: textColor }, textStyle, labelStyle]}
+      onLayout={onTextLayout}
+      testID={`${testID}-text`}
+    >
+      {text}
+    </Text>
+  );
+
+  return (
     <Animated.View
       style={[
         styles.container,
@@ -169,30 +181,19 @@ const TextInputAffix = ({
       onLayout={onLayout}
       testID={testID}
     >
-      <Text
-        maxFontSizeMultiplier={maxFontSizeMultiplier}
-        style={[{ color: textColor }, textStyle, labelStyle]}
-        onLayout={onTextLayout}
-        testID={`${testID}-text`}
-      >
-        {text}
-      </Text>
+      {onPress ? (
+        <Pressable
+          onPress={onPress}
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabel}
+        >
+          {content}
+        </Pressable>
+      ) : (
+        content
+      )}
     </Animated.View>
   );
-
-  if (onPress) {
-    return (
-      <Pressable
-        onPress={onPress}
-        accessibilityRole="button"
-        accessibilityLabel={accessibilityLabel}
-        style={styles.container}
-      >
-        {affix}
-      </Pressable>
-    );
-  }
-  return affix;
 };
 
 TextInputAffix.displayName = 'TextInput.Affix';

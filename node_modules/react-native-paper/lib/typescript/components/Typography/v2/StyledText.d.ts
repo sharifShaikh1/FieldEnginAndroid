@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
 import Text from './Text';
-declare type Props = React.ComponentProps<typeof Text> & {
+type Props = React.ComponentProps<typeof Text> & {
     alpha?: number;
     family: 'regular' | 'medium' | 'light' | 'thin';
     style?: StyleProp<TextStyle>;

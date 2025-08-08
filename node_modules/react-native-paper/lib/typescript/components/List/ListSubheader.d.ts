@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
 import Text from '../Typography/Text';
-export declare type Props = React.ComponentProps<typeof Text> & {
+export type Props = React.ComponentProps<typeof Text> & {
     /**
      * @optional
      */

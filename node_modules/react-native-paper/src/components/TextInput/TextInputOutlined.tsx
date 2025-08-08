@@ -76,6 +76,7 @@ const TextInputOutlined = ({
   placeholderTextColor,
   testID = 'text-input-outlined',
   contentStyle,
+  scaledLabel,
   ...rest
 }: ChildTextInputProps) => {
   const adornmentConfig = getAdornmentConfig({ left, right });
@@ -205,6 +206,10 @@ const TextInputOutlined = ({
     paddingHorizontal: INPUT_PADDING_HORIZONTAL,
   };
 
+  const placeholderTextColorBasedOnState = parentState.displayPlaceholder
+    ? placeholderTextColor ?? placeholderColor
+    : 'transparent';
+
   const labelBackgroundColor: ColorValue =
     backgroundColor === 'transparent'
       ? theme.colors.background
@@ -264,8 +269,7 @@ const TextInputOutlined = ({
     (dense ? MIN_DENSE_HEIGHT_OUTLINED : MIN_HEIGHT)) as number;
 
   const outlinedHeight =
-    inputHeight + (!height ? (dense ? densePaddingTop / 2 : paddingTop) : 0);
-
+    inputHeight + (dense ? densePaddingTop / 2 : paddingTop);
   const { leftLayout, rightLayout } = parentState;
 
   const leftAffixTopPosition = calculateOutlinedIconAndAffixTopPosition({
@@ -364,9 +368,11 @@ const TextInputOutlined = ({
             labeled={parentState.labeled}
             error={parentState.error}
             focused={parentState.focused}
+            scaledLabel={scaledLabel}
             wiggle={Boolean(parentState.value && labelProps.labelError)}
             labelLayoutMeasured={parentState.labelLayout.measured}
             labelLayoutWidth={parentState.labelLayout.width}
+            labelLayoutHeight={parentState.labelLayout.height}
             {...labelProps}
             labelBackground={LabelBackground}
             maxFontSizeMultiplier={rest.maxFontSizeMultiplier}
@@ -377,12 +383,12 @@ const TextInputOutlined = ({
           ref: innerRef,
           onLayout: onLayoutChange,
           onChangeText,
-          placeholder: label ? parentState.placeholder : rest.placeholder,
+          placeholder: rest.placeholder,
           editable: !disabled && editable,
           selectionColor,
           cursorColor:
             typeof cursorColor === 'undefined' ? activeColor : cursorColor,
-          placeholderTextColor: placeholderTextColor || placeholderColor,
+          placeholderTextColor: placeholderTextColorBasedOnState,
           onFocus,
           onBlur,
           underlineColorAndroid: 'transparent',
@@ -410,7 +416,7 @@ const TextInputOutlined = ({
                 MIN_WIDTH
               ),
             },
-            Platform.OS === 'web' && { outline: 'none' },
+            Platform.OS === 'web' ? { outline: 'none' } : undefined,
             adornmentStyleAdjustmentForNativeInput,
             contentStyle,
           ],
@@ -427,9 +433,11 @@ export default TextInputOutlined;
 const styles = StyleSheet.create({
   labelContainer: {
     paddingBottom: 0,
+    flexGrow: 1,
   },
   input: {
     margin: 0,
+    flexGrow: 1,
   },
   inputOutlined: {
     paddingTop: 8,

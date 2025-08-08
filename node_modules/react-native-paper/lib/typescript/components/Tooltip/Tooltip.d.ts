@@ -1,6 +1,6 @@
 import * as React from 'react';
 import type { ThemeProp } from 'src/types';
-export declare type Props = {
+export type Props = {
     /**
      * Tooltip reference element. Needs to be able to hold a ref.
      */

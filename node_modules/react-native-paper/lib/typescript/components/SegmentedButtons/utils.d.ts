@@ -1,11 +1,11 @@
 import { ViewStyle } from 'react-native';
 import type { InternalTheme } from '../../types';
-declare type BaseProps = {
+type BaseProps = {
     theme: InternalTheme;
     disabled?: boolean;
     checked: boolean;
 };
-declare type SegmentedButtonProps = {
+type SegmentedButtonProps = {
     checkedColor?: string;
     uncheckedColor?: string;
 } & BaseProps;

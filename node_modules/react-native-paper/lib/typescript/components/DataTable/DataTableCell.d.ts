@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleProp, ViewStyle, TextStyle, GestureResponderEvent } from 'react-native';
 import type { $RemoveChildren } from '../../types';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-export declare type Props = $RemoveChildren<typeof TouchableRipple> & {
+export type Props = $RemoveChildren<typeof TouchableRipple> & {
     /**
      * Content of the `DataTableCell`.
      */

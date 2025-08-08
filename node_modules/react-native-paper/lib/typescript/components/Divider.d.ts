@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import type { $RemoveChildren, ThemeProp } from '../types';
-export declare type Props = $RemoveChildren<typeof View> & {
+export type Props = $RemoveChildren<typeof View> & {
     /**
      * @renamed Renamed from 'inset' to 'leftInset` in v5.x
      * Whether divider has a left inset.

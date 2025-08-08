@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect,useRef } from 'react';
 
-import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, ScrollView, SafeAreaView, TouchableOpacity, Alert, ActivityIndicator, RefreshControl, StyleSheet } from 'react-native';
 
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -10,19 +10,19 @@ import * as TaskManager from 'expo-task-manager';
 
 import api from '../utils/api';
 
+
 import { useAuth } from '../context/AuthContext';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { Ionicons } from '@expo/vector-icons';
+import { Card, Title, Paragraph } from 'react-native-paper';
 
 import ActiveTicketCard from '../components/ActiveTicketCard';
-
 import PendingAssignmentCard from '../components/PendingAssignmentCard';
 
-import StatCard from '../components/StatCard';
-
 import { LOCATION_TASK_NAME } from '../services/locationTask';
+import { showMessage } from "react-native-flash-message";
 
 
 
@@ -58,7 +58,11 @@ const startBackgroundTracking = async (ticketId) => {
 
     if (foregroundStatus !== 'granted') {
 
-        Alert.alert('Permission Denied', 'Location permission is required for active tickets.');
+        showMessage({
+            message: "Permission Denied",
+            description: "Location permission is required for active tickets.",
+            type: "danger",
+        });
 
         return;
 
@@ -68,13 +72,15 @@ const startBackgroundTracking = async (ticketId) => {
 
     if (backgroundStatus !== 'granted') {
 
-        Alert.alert('Permission Denied', 'Background location permission is essential for tracking.');
+        showMessage({
+            message: "Permission Denied",
+            description: "Background location permission is essential for tracking.",
+            type: "danger",
+        });
 
         return;
 
     }
-
-
 
     await AsyncStorage.setItem('activeTicketId', ticketId);
 
@@ -204,7 +210,11 @@ const HomeScreen = ({ navigation }) => {
 
             console.error("Fetch Data Error:", error);
 
-            Alert.alert('Error', 'Failed to fetch dashboard data.');
+            showMessage({
+                message: "Error",
+                description: 'Failed to fetch dashboard data.',
+                type: "danger",
+            });
 
         } finally {
 
@@ -272,11 +282,19 @@ const HomeScreen = ({ navigation }) => {
 
             const { data } = await api.put(`/tickets/engineer/respond-assignment/${ticketId}`, { response });
 
-            Alert.alert('Success', data.message);
+            showMessage({
+                message: "Success",
+                description: data.message,
+                type: "success",
+            });
 
             if (response === 'accepted') {
 
-                Alert.alert("Assignment Accepted", "The ticket is now active.");
+                showMessage({
+                    message: "Assignment Accepted",
+                    description: "The ticket is now active.",
+                    type: "info",
+                });
 
             }
 
@@ -284,7 +302,11 @@ const HomeScreen = ({ navigation }) => {
 
         } catch (error) {
 
-            Alert.alert('Error', error.response?.data?.message || 'Could not respond to assignment.');
+            showMessage({
+                message: "Error",
+                description: error.response?.data?.message || 'Could not respond to assignment.',
+                type: "danger",
+            });
 
         }
 
@@ -335,10 +357,25 @@ const HomeScreen = ({ navigation }) => {
               <ActiveTicketCard ticket={activeTicket} />
             </View>
 
-            <View className="flex-row justify-around">
-              <StatCard label="Available" value={stats.available} icon="list" color="#3B82F6" onPress={() => navigation.navigate('Available')} />
-              <StatCard label="Payments" value={stats.pendingPayments} icon="wallet" color="#10B981" onPress={() => navigation.navigate('Payments')} />
-              <StatCard label="Completed" value={stats.totalClosedTickets} icon="archive" color="#6B7280" onPress={() => navigation.navigate('History')} />
+            <View style={styles.cardRow}>
+              <Card style={styles.infoCard} onPress={() => navigation.navigate('Available')}>
+                <Card.Content style={styles.infoCardContent}>
+                  <Ionicons name="list" size={30} color="#3B82F6" />
+                  <Title style={styles.infoCardTitle}>Available</Title>
+                </Card.Content>
+              </Card>
+              <Card style={styles.infoCard} onPress={() => navigation.navigate('Payments')}>
+                <Card.Content style={styles.infoCardContent}>
+                  <Ionicons name="wallet" size={30} color="#10B981" />
+                  <Title style={styles.infoCardTitle}>Payments</Title>
+                </Card.Content>
+              </Card>
+              <Card style={styles.infoCard} onPress={() => navigation.navigate('History')}>
+                <Card.Content style={styles.infoCardContent}>
+                  <Ionicons name="archive" size={30} color="#6B7280" />
+                  <Title style={styles.infoCardTitle}>Completed</Title>
+                </Card.Content>
+              </Card>
             </View>
           </View>
         )}
@@ -351,5 +388,30 @@ const HomeScreen = ({ navigation }) => {
 };
 
 
-
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  cardRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginTop: 20,
+  },
+  infoCard: {
+    flex: 1,
+    marginHorizontal: 5,
+    elevation: 2,
+    minWidth: 100, // Ensure a minimum width
+  },
+  infoCardContent: {
+    alignItems: 'center',
+    paddingVertical: 10, // Reduce vertical padding
+    paddingHorizontal: 5, // Add horizontal padding
+  },
+  infoCardTitle: {
+    fontSize: 14, // Reduce font size slightly
+    fontWeight: 'bold',
+    marginTop: 5, // Reduce margin top
+    textAlign: 'center',
+    flexWrap: 'nowrap', // Prevent text from wrapping
+  },
+});

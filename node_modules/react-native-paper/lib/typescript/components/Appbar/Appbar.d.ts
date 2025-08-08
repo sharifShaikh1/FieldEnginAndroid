@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Animated, StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = Omit<Partial<React.ComponentPropsWithRef<typeof View>>, 'style'> & {
+export type Props = Omit<Partial<React.ComponentPropsWithRef<typeof View>>, 'style'> & {
     /**
      * Whether the background color is a dark color. A dark appbar will render light text and vice-versa.
      */

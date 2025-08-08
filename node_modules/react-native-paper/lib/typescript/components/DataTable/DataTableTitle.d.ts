@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { GestureResponderEvent, Pressable, StyleProp, TextStyle, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof Pressable> & {
+export type Props = React.ComponentPropsWithRef<typeof Pressable> & {
     /**
      * Text content of the `DataTableTitle`.
      */

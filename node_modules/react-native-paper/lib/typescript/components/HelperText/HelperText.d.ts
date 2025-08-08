@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleProp, TextStyle } from 'react-native';
 import type { $Omit, ThemeProp } from '../../types';
 import AnimatedText from '../Typography/AnimatedText';
-export declare type Props = $Omit<$Omit<React.ComponentPropsWithRef<typeof AnimatedText>, 'padding'>, 'type'> & {
+export type Props = $Omit<$Omit<React.ComponentPropsWithRef<typeof AnimatedText>, 'padding'>, 'type'> & {
     /**
      * Type of the helper text.
      */

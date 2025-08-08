@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ColorValue, StyleProp, ViewStyle } from 'react-native';
 import { TextInputLabelProp } from '../types';
-declare type OutlineProps = {
+type OutlineProps = {
     isV3: boolean;
     activeColor: string;
     backgroundColor: ColorValue;

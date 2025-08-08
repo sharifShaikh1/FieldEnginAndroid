@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IconProps } from '../components/MaterialCommunityIcon';
-export declare type Settings = {
+export type Settings = {
     icon?: ({ name, color, size, direction, testID, }: IconProps) => React.ReactNode;
     rippleEffectEnabled?: boolean;
 };

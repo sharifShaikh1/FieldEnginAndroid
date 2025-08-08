@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * Title to show as the header for the section.
      */

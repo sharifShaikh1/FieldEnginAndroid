@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, TextStyle, View, ViewStyle } from 'react-native';
 import type { MD3TypescaleKey, ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * Text for the title. Note that this will only accept a string or `<Text>`-based node.
      */

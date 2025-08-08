@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ColorValue, StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & PaginationControlsProps & PaginationDropdownProps & {
+export type Props = React.ComponentPropsWithRef<typeof View> & PaginationControlsProps & PaginationDropdownProps & {
     /**
      * Label text for select page dropdown to display.
      */
@@ -24,7 +24,7 @@ export declare type Props = React.ComponentPropsWithRef<typeof View> & Paginatio
      */
     theme?: ThemeProp;
 };
-declare type PaginationDropdownProps = {
+type PaginationDropdownProps = {
     /**
      * The current number of rows per page.
      */
@@ -50,7 +50,7 @@ declare type PaginationDropdownProps = {
      */
     theme?: ThemeProp;
 };
-declare type PaginationControlsProps = {
+type PaginationControlsProps = {
     /**
      * The currently visible page (starting with 0).
      */

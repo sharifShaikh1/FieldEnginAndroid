@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GestureResponderEvent, StyleProp, ViewStyle, View, Animated, ColorValue } from 'react-native';
 import type { ThemeProp } from '../../types';
 import type { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      * Icon to display for the `ToggleButton`.
      */

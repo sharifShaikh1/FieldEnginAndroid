@@ -1,7 +1,7 @@
 import type { AdornmentConfig } from './Adornment/types';
 import type { TextInputLabelProp } from './types';
 import type { InternalTheme } from '../../types';
-declare type PaddingProps = {
+type PaddingProps = {
     height: number | null;
     labelHalfHeight: number;
     multiline: boolean | null;
@@ -18,10 +18,10 @@ declare type PaddingProps = {
         paddingBottom: number;
     };
 };
-declare type AdjProps = PaddingProps & {
+type AdjProps = PaddingProps & {
     pad: number;
 };
-export declare type Padding = {
+export type Padding = {
     paddingTop: number;
     paddingBottom: number;
 };

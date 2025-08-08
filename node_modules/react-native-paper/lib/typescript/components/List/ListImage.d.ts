@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, ImageSourcePropType, ImageStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = {
+export type Props = {
     source: ImageSourcePropType;
     variant?: 'image' | 'video';
     style?: StyleProp<ImageStyle>;

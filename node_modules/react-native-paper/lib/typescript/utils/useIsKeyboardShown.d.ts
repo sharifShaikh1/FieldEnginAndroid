@@ -1,4 +1,4 @@
-declare type Props = {
+type Props = {
     onShow: () => void;
     onHide: () => void;
 };

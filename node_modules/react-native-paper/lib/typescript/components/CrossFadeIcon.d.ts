@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IconSource } from './Icon';
 import type { ThemeProp } from '../types';
-declare type Props = {
+type Props = {
     /**
      * Icon to display for the `CrossFadeIcon`.
      */

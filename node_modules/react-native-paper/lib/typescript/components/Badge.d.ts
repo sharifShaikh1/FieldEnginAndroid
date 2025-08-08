@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Animated, StyleProp, TextStyle } from 'react-native';
 import type { ThemeProp } from '../types';
-export declare type Props = React.ComponentProps<typeof Animated.Text> & {
+export type Props = React.ComponentProps<typeof Animated.Text> & {
     /**
      * Whether the badge is visible
      */

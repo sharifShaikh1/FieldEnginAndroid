@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, Switch as NativeSwitch, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof NativeSwitch> & {
+export type Props = React.ComponentPropsWithRef<typeof NativeSwitch> & {
     /**
      * Disable toggling the switch.
      */

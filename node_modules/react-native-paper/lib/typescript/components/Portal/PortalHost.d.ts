@@ -1,8 +1,8 @@
 import * as React from 'react';
-export declare type Props = {
+export type Props = {
     children: React.ReactNode;
 };
-export declare type PortalMethods = {
+export type PortalMethods = {
     mount: (children: React.ReactNode) => number;
     update: (key: number, children: React.ReactNode) => void;
     unmount: (key: number) => void;

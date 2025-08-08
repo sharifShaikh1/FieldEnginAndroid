@@ -1,8 +1,8 @@
 import * as React from 'react';
-import type { GestureResponderEvent, StyleProp, ViewStyle, View, Animated } from 'react-native';
+import type { Animated, GestureResponderEvent, StyleProp, View, ViewStyle } from 'react-native';
 import type { $Omit } from './../../types';
 import AppbarAction from './AppbarAction';
-export declare type Props = $Omit<React.ComponentPropsWithoutRef<typeof AppbarAction>, 'icon'> & {
+export type Props = $Omit<React.ComponentPropsWithoutRef<typeof AppbarAction>, 'icon'> & {
     /**
      *  Custom color for back icon.
      */

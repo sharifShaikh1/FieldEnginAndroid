@@ -1,7 +1,7 @@
 /// <reference types="react" />
 import type { Descriptor, NavigationHelpers, NavigationProp, ParamListBase, RouteProp, TabActionHelpers, TabNavigationState } from '@react-navigation/native';
 import type BottomNavigation from '../components/BottomNavigation/BottomNavigation';
-export declare type MaterialBottomTabNavigationEventMap = {
+export type MaterialBottomTabNavigationEventMap = {
     /**
      * Event which fires on tapping on the tab in the tab bar.
      */
@@ -14,13 +14,13 @@ export declare type MaterialBottomTabNavigationEventMap = {
      */
     tabLongPress: {};
 };
-export declare type MaterialBottomTabNavigationHelpers = NavigationHelpers<ParamListBase, MaterialBottomTabNavigationEventMap> & TabActionHelpers<ParamListBase>;
-export declare type MaterialBottomTabNavigationProp<ParamList extends ParamListBase, RouteName extends keyof ParamList = keyof ParamList, NavigatorID extends string | undefined = undefined> = NavigationProp<ParamList, RouteName, NavigatorID, TabNavigationState<ParamList>, MaterialBottomTabNavigationOptions, MaterialBottomTabNavigationEventMap> & TabActionHelpers<ParamList>;
-export declare type MaterialBottomTabScreenProps<ParamList extends ParamListBase, RouteName extends keyof ParamList = keyof ParamList, NavigatorID extends string | undefined = undefined> = {
+export type MaterialBottomTabNavigationHelpers = NavigationHelpers<ParamListBase, MaterialBottomTabNavigationEventMap> & TabActionHelpers<ParamListBase>;
+export type MaterialBottomTabNavigationProp<ParamList extends ParamListBase, RouteName extends keyof ParamList = keyof ParamList, NavigatorID extends string | undefined = undefined> = NavigationProp<ParamList, RouteName, NavigatorID, TabNavigationState<ParamList>, MaterialBottomTabNavigationOptions, MaterialBottomTabNavigationEventMap> & TabActionHelpers<ParamList>;
+export type MaterialBottomTabScreenProps<ParamList extends ParamListBase, RouteName extends keyof ParamList = keyof ParamList, NavigatorID extends string | undefined = undefined> = {
     navigation: MaterialBottomTabNavigationProp<ParamList, RouteName, NavigatorID>;
     route: RouteProp<ParamList, RouteName>;
 };
-export declare type MaterialBottomTabNavigationOptions = {
+export type MaterialBottomTabNavigationOptions = {
     /**
      * Title text for the screen.
      */
@@ -55,7 +55,7 @@ export declare type MaterialBottomTabNavigationOptions = {
      */
     tabBarButtonTestID?: string;
 };
-export declare type MaterialBottomTabDescriptor = Descriptor<MaterialBottomTabNavigationOptions, MaterialBottomTabNavigationProp<ParamListBase>, RouteProp<ParamListBase>>;
-export declare type MaterialBottomTabDescriptorMap = Record<string, MaterialBottomTabDescriptor>;
-export declare type MaterialBottomTabNavigationConfig = Partial<Omit<React.ComponentProps<typeof BottomNavigation>, 'navigationState' | 'onIndexChange' | 'onTabPress' | 'onTabLongPress' | 'renderScene' | 'renderLabel' | 'renderIcon' | 'getAccessibilityLabel' | 'getBadge' | 'getColor' | 'getLabelText' | 'getTestID' | 'getLazy'>>;
+export type MaterialBottomTabDescriptor = Descriptor<MaterialBottomTabNavigationOptions, MaterialBottomTabNavigationProp<ParamListBase>, RouteProp<ParamListBase>>;
+export type MaterialBottomTabDescriptorMap = Record<string, MaterialBottomTabDescriptor>;
+export type MaterialBottomTabNavigationConfig = Partial<Omit<React.ComponentProps<typeof BottomNavigation>, 'navigationState' | 'onIndexChange' | 'onTabPress' | 'onTabLongPress' | 'renderScene' | 'renderLabel' | 'renderIcon' | 'getAccessibilityLabel' | 'getBadge' | 'getColor' | 'getLabelText' | 'getTestID' | 'getLazy'>>;
 //# sourceMappingURL=types.d.ts.map

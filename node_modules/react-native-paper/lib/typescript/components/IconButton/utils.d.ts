@@ -1,6 +1,6 @@
 import type { ColorValue } from 'react-native';
 import type { InternalTheme } from '../../types';
-declare type IconButtonMode = 'outlined' | 'contained' | 'contained-tonal';
+type IconButtonMode = 'outlined' | 'contained' | 'contained-tonal';
 export declare const getIconButtonColor: ({ theme, disabled, mode, selected, customIconColor, customContainerColor, customRippleColor, }: {
     theme: InternalTheme;
     disabled?: boolean | undefined;

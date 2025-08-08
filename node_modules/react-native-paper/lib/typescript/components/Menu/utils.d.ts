@@ -3,13 +3,13 @@ import type { InternalTheme } from '../../types';
 import type { IconSource } from '../Icon';
 export declare const MIN_WIDTH = 112;
 export declare const MAX_WIDTH = 280;
-declare type ContentProps = {
+type ContentProps = {
     isV3: boolean;
     iconWidth: number;
     leadingIcon?: IconSource;
     trailingIcon?: IconSource;
 };
-declare type ColorProps = {
+type ColorProps = {
     theme: InternalTheme;
     disabled?: boolean;
     customRippleColor?: ColorValue;

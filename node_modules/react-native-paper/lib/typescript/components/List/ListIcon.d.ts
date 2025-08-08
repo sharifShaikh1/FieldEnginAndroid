@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ViewStyle, StyleProp } from 'react-native';
 import type { ThemeProp } from '../../types';
 import { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      * Icon to show.
      */

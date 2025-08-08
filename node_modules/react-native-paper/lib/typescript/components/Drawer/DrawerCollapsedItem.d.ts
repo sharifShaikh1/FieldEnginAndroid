@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GestureResponderEvent, StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
 import { IconSource } from '../Icon';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * The label text of the item.
      */

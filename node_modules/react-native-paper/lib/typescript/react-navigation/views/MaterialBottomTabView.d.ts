@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { ParamListBase, TabNavigationState } from '@react-navigation/native';
 import type { MaterialBottomTabDescriptorMap, MaterialBottomTabNavigationConfig, MaterialBottomTabNavigationHelpers } from '../types';
-declare type Props = MaterialBottomTabNavigationConfig & {
+type Props = MaterialBottomTabNavigationConfig & {
     state: TabNavigationState<ParamListBase>;
     navigation: MaterialBottomTabNavigationHelpers;
     descriptors: MaterialBottomTabDescriptorMap;

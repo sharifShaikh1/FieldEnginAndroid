@@ -1,5 +1,5 @@
 import * as React from 'react';
-export declare type Props<Value = string> = {
+export type Props<Value = string> = {
     /**
      * Function to execute on selection change.
      */

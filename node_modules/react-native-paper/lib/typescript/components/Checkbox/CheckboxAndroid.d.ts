@@ -2,7 +2,7 @@ import * as React from 'react';
 import { GestureResponderEvent } from 'react-native';
 import type { $RemoveChildren, ThemeProp } from '../../types';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-export declare type Props = $RemoveChildren<typeof TouchableRipple> & {
+export type Props = $RemoveChildren<typeof TouchableRipple> & {
     /**
      * Status of checkbox.
      */

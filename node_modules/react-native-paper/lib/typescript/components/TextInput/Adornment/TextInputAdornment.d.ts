@@ -1,5 +1,5 @@
 import React from 'react';
-import type { LayoutChangeEvent, TextStyle, StyleProp, Animated } from 'react-native';
+import type { LayoutChangeEvent, TextStyle, StyleProp, Animated, DimensionValue } from 'react-native';
 import type { ThemeProp } from 'src/types';
 import { AdornmentSide, AdornmentType } from './enums';
 import type { AdornmentConfig, AdornmentStyleAdjustmentForNativeInput } from './types';
@@ -13,7 +13,7 @@ export declare function getAdornmentStyleAdjustmentForNativeInput({ adornmentCon
     leftAffixWidth: number;
     rightAffixWidth: number;
     mode?: 'outlined' | 'flat';
-    paddingHorizontal?: number | string;
+    paddingHorizontal?: DimensionValue;
     isV3?: boolean;
 }): AdornmentStyleAdjustmentForNativeInput | {};
 export interface TextInputAdornmentProps {
@@ -35,7 +35,7 @@ export interface TextInputAdornmentProps {
     textStyle?: StyleProp<TextStyle>;
     visible?: Animated.Value;
     isTextInputFocused: boolean;
-    paddingHorizontal?: number | string;
+    paddingHorizontal?: DimensionValue;
     maxFontSizeMultiplier?: number | undefined | null;
     theme?: ThemeProp;
     disabled?: boolean;

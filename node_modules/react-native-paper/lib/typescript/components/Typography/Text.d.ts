@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleProp, Text as NativeText, TextStyle } from 'react-native';
 import type { VariantProp } from './types';
 import type { ThemeProp } from '../../types';
-export declare type Props<T> = React.ComponentProps<typeof NativeText> & {
+export type Props<T> = React.ComponentProps<typeof NativeText> & {
     /**
      * @supported Available in v5.x with theme version 3
      *
@@ -24,10 +24,10 @@ export declare type Props<T> = React.ComponentProps<typeof NativeText> & {
     theme?: ThemeProp;
     style?: StyleProp<TextStyle>;
 };
-export declare type TextRef = React.ForwardedRef<{
+export type TextRef = React.ForwardedRef<{
     setNativeProps(args: Object): void;
 }>;
-declare type TextComponent<T> = (props: Props<T> & {
+type TextComponent<T> = (props: Props<T> & {
     ref?: React.RefObject<TextRef>;
 }) => JSX.Element;
 declare const Component: TextComponent<never>;

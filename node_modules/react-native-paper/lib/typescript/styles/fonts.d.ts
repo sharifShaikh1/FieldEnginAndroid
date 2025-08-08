@@ -56,7 +56,7 @@ export declare const fontConfig: {
         };
     };
 };
-declare type MD2FontsConfig = {
+type MD2FontsConfig = {
     [platform in PlatformOSType | 'default']?: Fonts;
 };
 export default function configureFonts(params: {

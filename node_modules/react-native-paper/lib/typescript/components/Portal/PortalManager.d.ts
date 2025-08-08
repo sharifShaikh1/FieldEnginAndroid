@@ -1,5 +1,5 @@
 import * as React from 'react';
-declare type State = {
+type State = {
     portals: Array<{
         key: number;
         children: React.ReactNode;

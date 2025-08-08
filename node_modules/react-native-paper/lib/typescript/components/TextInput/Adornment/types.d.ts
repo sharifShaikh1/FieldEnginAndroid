@@ -1,9 +1,9 @@
 import type { AdornmentSide, AdornmentType } from './enums';
-export declare type AdornmentConfig = {
+export type AdornmentConfig = {
     side: AdornmentSide;
     type: AdornmentType;
 };
-export declare type AdornmentStyleAdjustmentForNativeInput = {
+export type AdornmentStyleAdjustmentForNativeInput = {
     adornmentStyleAdjustmentForNativeInput: Array<{
         paddingRight: number;
         paddingLeft: number;

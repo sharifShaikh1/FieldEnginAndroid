@@ -14,6 +14,8 @@ import './services/locationTask';
 import './global.css'
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
+import { PaperProvider, DefaultTheme } from 'react-native-paper';
+import FlashMessage from "react-native-flash-message";
 
 const Stack = createStackNavigator();
 
@@ -61,16 +63,35 @@ const AppContent = () => {
   );
 };
 
+
+const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#4F46E5', // Indigo-600
+    accent: '#10B981', // Green-500
+    background: '#F3F4F6', // Gray-100
+    surface: '#FFFFFF',
+    text: '#1F2937', // Gray-800
+    placeholder: '#6B7280', // Gray-500
+    backdrop: 'rgba(0, 0, 0, 0.5)',
+  },
+  roundness: 8,
+};
+
 // The main App component now just sets up the providers
 function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <AuthProvider>
         <SocketProvider>
-          <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
-            <AppContent />
-          </NavigationContainer>
+          <PaperProvider theme={theme}>
+            <NavigationContainer linking={linking} fallback={<Text>Loading...</Text>}>
+              <AppContent />
+            </NavigationContainer>
+          </PaperProvider>
         </SocketProvider>
+        <FlashMessage position="top" />
       </AuthProvider>
     </GestureHandlerRootView>
   );

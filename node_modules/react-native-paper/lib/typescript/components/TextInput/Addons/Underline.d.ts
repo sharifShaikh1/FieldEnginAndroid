@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, ViewStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
-declare type UnderlineProps = {
+type UnderlineProps = {
     parentState: {
         focused: boolean;
     };

@@ -1,5 +1,5 @@
 import type { InternalTheme } from '../../../types';
-declare type BaseProps = {
+type BaseProps = {
     theme: InternalTheme;
     disabled?: boolean;
 };

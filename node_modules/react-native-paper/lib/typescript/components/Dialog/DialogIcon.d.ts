@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { ThemeProp } from 'src/types';
 import { IconSource } from '../Icon';
-export declare type Props = {
+export type Props = {
     /**
      *  Custom color for action icon.
      */

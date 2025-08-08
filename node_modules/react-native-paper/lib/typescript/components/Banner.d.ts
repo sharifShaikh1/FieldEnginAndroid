@@ -4,7 +4,7 @@ import Button from './Button/Button';
 import { IconSource } from './Icon';
 import Surface from './Surface';
 import type { $Omit, $RemoveChildren, ThemeProp } from '../types';
-export declare type Props = $Omit<$RemoveChildren<typeof Surface>, 'mode'> & {
+export type Props = $Omit<$RemoveChildren<typeof Surface>, 'mode'> & {
     /**
      * Whether banner is currently visible.
      */

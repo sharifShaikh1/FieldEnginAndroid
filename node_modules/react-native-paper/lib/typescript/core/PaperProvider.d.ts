@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Settings } from './settings';
 import type { ThemeProp } from '../types';
-export declare type Props = {
+export type Props = {
     children: React.ReactNode;
     theme?: ThemeProp;
     settings?: Settings;

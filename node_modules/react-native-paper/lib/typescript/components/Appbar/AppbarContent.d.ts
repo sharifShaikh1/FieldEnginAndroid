@@ -2,15 +2,15 @@ import * as React from 'react';
 import { GestureResponderEvent, StyleProp, TextStyle, View, ViewStyle } from 'react-native';
 import type { $RemoveChildren, ThemeProp } from '../../types';
 import { TextRef } from '../Typography/Text';
-declare type TitleString = {
+type TitleString = {
     title: string;
     titleStyle?: StyleProp<TextStyle>;
 };
-declare type TitleElement = {
+type TitleElement = {
     title: React.ReactNode;
     titleStyle?: never;
 };
-export declare type Props = $RemoveChildren<typeof View> & {
+export type Props = $RemoveChildren<typeof View> & {
     /**
      * Text or component for the title.
      */

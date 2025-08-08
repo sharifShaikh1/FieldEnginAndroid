@@ -2,7 +2,7 @@ import * as React from 'react';
 import { ColorValue, GestureResponderEvent, StyleProp, View, ViewStyle } from 'react-native';
 import type { PressableProps, PressableStateCallbackType } from './Pressable';
 import type { ThemeProp } from '../../types';
-export declare type Props = PressableProps & {
+export type Props = PressableProps & {
     /**
      * Whether to render the ripple outside the view bounds.
      */

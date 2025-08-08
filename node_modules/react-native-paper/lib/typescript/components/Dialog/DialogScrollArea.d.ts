@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from 'src/types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * Content of the `DialogScrollArea`.
      */

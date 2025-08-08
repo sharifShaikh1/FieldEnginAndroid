@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Image, StyleProp, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof Image> & {
+export type Props = React.ComponentPropsWithRef<typeof Image> & {
     /**
      * @internal
      */

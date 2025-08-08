@@ -1,7 +1,7 @@
 import * as React from 'react';
 import type { InternalTheme } from 'src/types';
 import PortalHost from './PortalHost';
-export declare type Props = {
+export type Props = {
     /**
      * Content of the `Portal`.
      */

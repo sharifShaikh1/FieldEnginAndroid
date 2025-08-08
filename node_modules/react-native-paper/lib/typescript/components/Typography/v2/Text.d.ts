@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, Text as NativeText, TextStyle } from 'react-native';
 import type { MD2Theme } from 'src/types';
-declare type Props = React.ComponentProps<typeof NativeText> & {
+type Props = React.ComponentProps<typeof NativeText> & {
     style?: StyleProp<TextStyle>;
     /**
      * @optional

@@ -1,47 +1,50 @@
 import React from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity } from 'react-native';
+import { Card, Title, Paragraph, Text } from 'react-native-paper';
 
 const TicketCard = ({ ticket, onAction, actionLabel, hasRequested }) => {
   const isClosed = ticket.status === 'Closed';
   const isPaid = ticket.paymentStatus === 'Paid';
 
   return (
-    <View className="bg-white p-5 rounded-xl shadow-sm mb-4 border border-gray-200">
-      <View className="flex-row justify-between items-center">
-        <Text className="text-sm font-bold text-indigo-700">{ticket.ticketId}</Text>
-        <Text className="text-xl font-bold text-green-600">₹{ticket.amount}</Text>
-      </View>
-      <Text className="text-lg font-bold text-gray-800 mt-2">{ticket.companyName}</Text>
-      <Text className="text-gray-500 mt-1">{ticket.siteAddress}</Text>
-      <View className="border-t border-gray-100 my-3" />
-      <View className="flex-row flex-wrap">
-        {ticket.expertiseRequired.map(exp => (
-          <Text key={exp} className="text-xs bg-gray-200 text-gray-800 self-start px-3 py-1 rounded-full mt-2 mr-2">
-            {exp}
-          </Text>
-        ))}
-      </View>
-
-      {/* Show payment status for closed tickets */}
-      {isClosed && (
-        <View className={`mt-4 p-2 rounded-lg items-center ${isPaid ? 'bg-green-100' : 'bg-yellow-100'}`}>
-          <Text className={`font-bold ${isPaid ? 'text-green-700' : 'text-yellow-700'}`}>
-            Payment Status: {ticket.paymentStatus}
-          </Text>
+    <Card style={{ marginBottom: 10, elevation: 2 }}>
+      <Card.Content>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Title style={{ fontSize: 16, color: '#4F46E5' }}>{ticket.ticketId}</Title>
+          <Title style={{ fontSize: 18, color: '#10B981' }}>₹{ticket.amount}</Title>
         </View>
-      )}
+        <Title style={{ fontSize: 18, marginTop: 5 }}>{ticket.companyName}</Title>
+        <Paragraph style={{ color: '#6B7280' }}>{ticket.siteAddress}</Paragraph>
+        <View style={{ borderBottomColor: '#E5E7EB', borderBottomWidth: 1, marginVertical: 10 }} />
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+          {ticket.expertiseRequired.map(exp => (
+            <Text key={exp} style={{ fontSize: 12, backgroundColor: '#E5E7EB', color: '#374151', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 15, marginTop: 5, marginRight: 5 }}>
+              {exp}
+            </Text>
+          ))}
+        </View>
 
-      {/* Button with dynamic state */}
-      {onAction && (
-        <TouchableOpacity
-          onPress={onAction}
-          disabled={hasRequested}
-          className={`${hasRequested ? 'bg-gray-300' : 'bg-indigo-600'} mt-4 p-4 rounded-lg items-center`}
-        >
-          <Text className="text-white font-bold">{hasRequested ? 'Access Requested' : actionLabel}</Text>
-        </TouchableOpacity>
-      )}
-    </View>
+        {/* Show payment status for closed tickets */}
+        {isClosed && (
+          <View style={{ marginTop: 10, padding: 8, borderRadius: 8, alignItems: 'center', backgroundColor: isPaid ? '#D1FAE5' : '#FEF3C7' }}>
+            <Paragraph style={{ fontWeight: 'bold', color: isPaid ? '#065F46' : '#92400E' }}>
+              Payment Status: {ticket.paymentStatus}
+            </Paragraph>
+          </View>
+        )}
+
+        {/* Button with dynamic state */}
+        {onAction && (
+          <TouchableOpacity
+            onPress={onAction}
+            disabled={hasRequested}
+            style={{ backgroundColor: hasRequested ? '#D1D5DB' : '#4F46E5', marginTop: 15, padding: 12, borderRadius: 8, alignItems: 'center' }}
+          >
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>{hasRequested ? 'Access Requested' : actionLabel}</Text>
+          </TouchableOpacity>
+        )}
+      </Card.Content>
+    </Card>
   );
 };
 

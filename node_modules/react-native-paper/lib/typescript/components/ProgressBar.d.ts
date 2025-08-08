@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Animated, StyleProp, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * Animated value (between 0 and 1). This tells the progress bar to rely on this value to animate it.
      * Note: It should not be used in parallel with the `progress` prop.

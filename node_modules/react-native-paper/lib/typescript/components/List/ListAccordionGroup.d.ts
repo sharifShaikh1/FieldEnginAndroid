@@ -1,5 +1,5 @@
 import * as React from 'react';
-export declare type Props = {
+export type Props = {
     /**
      * Function to execute on selection change.
      */
@@ -13,7 +13,7 @@ export declare type Props = {
      */
     children: React.ReactNode;
 };
-export declare type ListAccordionGroupContextType = {
+export type ListAccordionGroupContextType = {
     expandedId: string | number | undefined;
     onAccordionPress: (expandedId: string | number) => void;
 } | null;

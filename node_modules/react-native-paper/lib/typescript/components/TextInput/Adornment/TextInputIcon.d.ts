@@ -3,7 +3,7 @@ import { ColorValue, GestureResponderEvent, StyleProp, ViewStyle } from 'react-n
 import type { $Omit, ThemeProp } from '../../../types';
 import type { IconSource } from '../../Icon';
 import IconButton from '../../IconButton/IconButton';
-export declare type Props = $Omit<React.ComponentProps<typeof IconButton>, 'icon' | 'theme' | 'color' | 'iconColor'> & {
+export type Props = $Omit<React.ComponentProps<typeof IconButton>, 'icon' | 'theme' | 'color' | 'iconColor'> & {
     /**
      * @renamed Renamed from 'name' to 'icon` in v5.x
      * Icon to show.
@@ -31,7 +31,7 @@ export declare type Props = $Omit<React.ComponentProps<typeof IconButton>, 'icon
      */
     theme?: ThemeProp;
 };
-declare type StyleContextType = {
+type StyleContextType = {
     style: StyleProp<ViewStyle>;
     isTextInputFocused: boolean;
     forceFocus: () => void;
@@ -72,9 +72,6 @@ declare const IconAdornment: React.FunctionComponent<{
 declare const TextInputIcon: {
     ({ icon, onPress, forceTextInputFocus, color: customColor, theme: themeOverrides, rippleColor, ...rest }: Props): React.JSX.Element;
     displayName: string;
-    defaultProps: {
-        forceTextInputFocus: boolean;
-    };
 };
 export default TextInputIcon;
 export { IconAdornment };

@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { ImageSourcePropType } from 'react-native';
 import type { ThemeProp } from '../types';
-declare type IconSourceBase = string | ImageSourcePropType;
-export declare type IconSource = IconSourceBase | Readonly<{
+type IconSourceBase = string | ImageSourcePropType;
+export type IconSource = IconSourceBase | Readonly<{
     source: IconSourceBase;
     direction: 'rtl' | 'ltr' | 'auto';
 }> | ((props: IconProps & {
     color: string;
 }) => React.ReactNode);
-declare type IconProps = {
+type IconProps = {
     /**
      * Size of icon.
      */
@@ -17,7 +17,7 @@ declare type IconProps = {
 };
 export declare const isValidIcon: (source: any) => boolean;
 export declare const isEqualIcon: (a: any, b: any) => boolean;
-export declare type Props = IconProps & {
+export type Props = IconProps & {
     /**
      * Icon to display.
      */

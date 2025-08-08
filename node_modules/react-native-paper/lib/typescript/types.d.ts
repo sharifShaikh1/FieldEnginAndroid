@@ -1,18 +1,18 @@
 import type * as React from 'react';
 import type { $DeepPartial } from '@callstack/react-theme-provider';
-export declare type Font = {
+export type Font = {
     fontFamily: string;
     fontWeight?: 'normal' | 'bold' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
     fontStyle?: 'normal' | 'italic' | undefined;
 };
-export declare type Fonts = {
+export type Fonts = {
     regular: Font;
     medium: Font;
     light: Font;
     thin: Font;
 };
-declare type Mode = 'adaptive' | 'exact';
-export declare type MD2Colors = {
+type Mode = 'adaptive' | 'exact';
+export type MD2Colors = {
     primary: string;
     background: string;
     surface: string;
@@ -26,7 +26,7 @@ export declare type MD2Colors = {
     notification: string;
     tooltip: string;
 };
-export declare type MD3Colors = {
+export type MD3Colors = {
     primary: string;
     primaryContainer: string;
     secondary: string;
@@ -61,7 +61,7 @@ export declare type MD3Colors = {
     backdrop: string;
     elevation: MD3ElevationColors;
 };
-export declare type MD3AndroidColors = {
+export type MD3AndroidColors = {
     primary: number;
     primaryContainer: number;
     secondary: number;
@@ -92,9 +92,9 @@ export declare type MD3AndroidColors = {
     shadow: number;
     scrim: number;
 };
-export declare type MD3Palette = {};
-export declare type ThemeProp = $DeepPartial<InternalTheme>;
-export declare type ThemeBase = {
+export type MD3Palette = {};
+export type ThemeProp = $DeepPartial<InternalTheme>;
+export type ThemeBase = {
     dark: boolean;
     mode?: Mode;
     roundness: number;
@@ -103,19 +103,19 @@ export declare type ThemeBase = {
         defaultAnimationDuration?: number;
     };
 };
-export declare type MD3Theme = ThemeBase & {
+export type MD3Theme = ThemeBase & {
     version: 3;
     isV3: true;
     colors: MD3Colors;
     fonts: MD3Typescale;
 };
-export declare type MD2Theme = ThemeBase & {
+export type MD2Theme = ThemeBase & {
     version: 2;
     isV3: false;
     colors: MD2Colors;
     fonts: Fonts;
 };
-export declare type InternalTheme = MD2Theme | MD3Theme;
+export type InternalTheme = MD2Theme | MD3Theme;
 export declare enum MD3TypescaleKey {
     displayLarge = "displayLarge",
     displayMedium = "displayMedium",
@@ -133,7 +133,7 @@ export declare enum MD3TypescaleKey {
     bodyMedium = "bodyMedium",
     bodySmall = "bodySmall"
 }
-export declare type MD3Type = {
+export type MD3Type = {
     fontFamily: string;
     letterSpacing: number;
     fontWeight: Font['fontWeight'];
@@ -141,12 +141,12 @@ export declare type MD3Type = {
     fontSize: number;
     fontStyle?: Font['fontStyle'];
 };
-export declare type MD3Typescale = {
+export type MD3Typescale = {
     [key in MD3TypescaleKey]: MD3Type;
 } & {
     ['default']: Omit<MD3Type, 'lineHeight' | 'fontSize'>;
 };
-export declare type MD3Elevation = 0 | 1 | 2 | 3 | 4 | 5;
+export type MD3Elevation = 0 | 1 | 2 | 3 | 4 | 5;
 export declare enum ElevationLevels {
     'level0' = 0,
     'level1' = 1,
@@ -155,13 +155,13 @@ export declare enum ElevationLevels {
     'level4' = 4,
     'level5' = 5
 }
-export declare type MD3ElevationColors = {
+export type MD3ElevationColors = {
     [key in keyof typeof ElevationLevels]: string;
 };
-export declare type $Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
-export declare type $RemoveChildren<T extends React.ComponentType<any>> = $Omit<React.ComponentPropsWithoutRef<T>, 'children'>;
-export declare type EllipsizeProp = 'head' | 'middle' | 'tail' | 'clip';
-export declare type NavigationTheme = {
+export type $Omit<T, K> = Pick<T, Exclude<keyof T, K>>;
+export type $RemoveChildren<T extends React.ComponentType<any>> = $Omit<React.ComponentPropsWithoutRef<T>, 'children'>;
+export type EllipsizeProp = 'head' | 'middle' | 'tail' | 'clip';
+export type NavigationTheme = {
     dark: boolean;
     colors: {
         primary: string;

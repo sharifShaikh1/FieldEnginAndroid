@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleProp, TextStyle, View, ViewStyle } from 'react-native';
 import type { ThemeProp } from '../../types';
-export declare type Props = React.ComponentPropsWithRef<typeof View> & {
+export type Props = React.ComponentPropsWithRef<typeof View> & {
     /**
      * Initials to show as the text in the `Avatar`.
      */

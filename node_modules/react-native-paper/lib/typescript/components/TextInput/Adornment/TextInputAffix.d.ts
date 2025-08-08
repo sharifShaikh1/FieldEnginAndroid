@@ -1,8 +1,8 @@
 import React from 'react';
-import { Animated, GestureResponderEvent, LayoutChangeEvent, StyleProp, TextStyle } from 'react-native';
+import { Animated, DimensionValue, GestureResponderEvent, LayoutChangeEvent, StyleProp, TextStyle } from 'react-native';
 import { AdornmentSide } from './enums';
 import type { ThemeProp } from '../../../types';
-export declare type Props = {
+export type Props = {
     /**
      * Text to show.
      */
@@ -25,13 +25,13 @@ export declare type Props = {
      */
     theme?: ThemeProp;
 };
-declare type ContextState = {
+type ContextState = {
     topPosition: number | null;
     onLayout?: (event: LayoutChangeEvent) => void;
     visible?: Animated.Value;
     textStyle?: StyleProp<TextStyle>;
     side: AdornmentSide;
-    paddingHorizontal?: number | string;
+    paddingHorizontal?: DimensionValue;
     maxFontSizeMultiplier?: number | undefined | null;
     testID?: string;
     disabled?: boolean;
