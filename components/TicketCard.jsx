@@ -16,6 +16,10 @@ const TicketCard = ({ ticket, onAction, actionLabel, hasRequested }) => {
         <Title style={{ fontSize: 18, marginTop: 5 }}>{ticket.companyName}</Title>
         <Paragraph style={{ color: '#6B7280' }}>{ticket.siteAddress}</Paragraph>
         <View style={{ borderBottomColor: '#E5E7EB', borderBottomWidth: 1, marginVertical: 10 }} />
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+          <Text style={{ fontSize: 14, color: '#6B7280' }}>Engineers Needed: {ticket.requiredEngineers}</Text>
+          <Text style={{ fontSize: 14, color: '#6B7280' }}>Accepted: {ticket.acceptedEngineersCount}</Text>
+        </View>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           {ticket.expertiseRequired.map(exp => (
             <Text key={exp} style={{ fontSize: 12, backgroundColor: '#E5E7EB', color: '#374151', alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 15, marginTop: 5, marginRight: 5 }}>
