@@ -5,8 +5,10 @@ import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
 import { Ionicons } from '@expo/vector-icons';
 import { API_BASE_URL } from '../config/apiConfig';
+import { usePreventScreenCapture } from 'expo-screen-capture';
 
 const ChatScreen = ({ route, navigation }) => {
+  usePreventScreenCapture();
   const { ticketId, receiverId, chatTitle } = route.params;
   const socket = useSocket();
   const { user, token } = useAuth();

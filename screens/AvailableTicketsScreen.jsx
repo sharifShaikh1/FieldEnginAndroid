@@ -45,19 +45,18 @@ const AvailableTicketsScreen = () => {
     fetchActiveTicketStatus();
   };
 
-  const handleRequestAccess = async (ticketId) => {
+  const handleAcceptTicket = async (ticketId) => {
     if (hasActiveTicket) {
-      Alert.alert('Cannot Request Access', 'You already have an active ticket. Please complete it before requesting access to another.');
+      Alert.alert('Cannot Accept Ticket', 'You already have an active ticket. Please complete it before accepting another.');
       return;
     }
     try {
-        await api.post(`/tickets/${ticketId}/request-access`);
-        Alert.alert('Success', 'Access has been requested. The admin will be notified.');
-        setTickets(prevTickets => prevTickets.map(t => 
-            t._id === ticketId ? { ...t, accessRequestedByMe: true } : t
-        ));
+        await api.put(`/tickets/${ticketId}/accept`);
+        Alert.alert('Success', 'Ticket accepted successfully!');
+        fetchTickets(); // Refresh the list of available tickets
+        fetchActiveTicketStatus(); // Update active ticket status
     } catch (err) {
-        Alert.alert('Error', err.response?.data?.message || 'Could not request access.');
+        Alert.alert('Error', err.response?.data?.message || 'Could not accept ticket.');
     }
   };
 
@@ -80,9 +79,8 @@ const AvailableTicketsScreen = () => {
             renderItem={({ item }) => (
                 <TicketCard 
                     ticket={item} 
-                    onAction={hasActiveTicket ? null : () => handleRequestAccess(item._id)} // Disable action if active ticket exists
-                    actionLabel="Request Access"
-                    hasRequested={item.accessRequests.some(req => req.userId._id === user.id) || item.accessRequestedByMe}
+                    onAction={hasActiveTicket ? null : () => handleAcceptTicket(item._id)} // Disable action if active ticket exists
+                    actionLabel="Accept"
                 />
             )}
             contentContainerStyle={{ paddingHorizontal: 16, paddingTop: 16 }}

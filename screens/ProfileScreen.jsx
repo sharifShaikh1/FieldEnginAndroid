@@ -6,8 +6,12 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
 import { Ionicons } from '@expo/vector-icons'; // Import Ionicons
+import * as ScreenCapture from 'expo-screen-capture';
+import { usePreventScreenCapture } from 'expo-screen-capture';
+import IdCard from '../components/IdCard';
 
 const ProfileScreen = ({ navigation }) => {
+  usePreventScreenCapture();
   console.log('ProfileScreen component rendered.');
   const { user, logout } = useAuth();
   const [profile, setProfile] = useState(null);
@@ -16,6 +20,7 @@ const ProfileScreen = ({ navigation }) => {
   const [uploading, setUploading] = useState(false);
   const [isUpiModalVisible, setUpiModalVisible] = useState(false);
   const [newUpiId, setNewUpiId] = useState('');
+  const [isIdCardVisible, setIsIdCardVisible] = useState(false);
 
   const fileToBase64 = async (uri) => {
     try {
@@ -175,6 +180,15 @@ const ProfileScreen = ({ navigation }) => {
           </>
         ))}
 
+        {renderSection('Identity', (
+          <TouchableOpacity
+            style={styles.manageButton}
+            onPress={() => setIsIdCardVisible(true)}
+          >
+            <Text style={styles.manageButtonText}>View ID Card</Text>
+          </TouchableOpacity>
+        ))}
+
         {renderSection('Certificates', (
           <TouchableOpacity
             style={styles.manageButton}
@@ -214,6 +228,23 @@ const ProfileScreen = ({ navigation }) => {
               </View>
             </View>
           </View>
+        </Modal>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isIdCardVisible}
+          onRequestClose={() => setIsIdCardVisible(false)}
+        >
+          <TouchableOpacity
+            style={styles.modalOverlay}
+            activeOpacity={1}
+            onPressOut={() => setIsIdCardVisible(false)}
+          >
+            <View style={styles.modalContent}>
+              <IdCard user={profile} />
+            </View>
+          </TouchableOpacity>
         </Modal>
 
       </ScrollView>

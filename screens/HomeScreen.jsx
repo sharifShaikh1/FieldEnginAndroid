@@ -354,7 +354,7 @@ const HomeScreen = ({ navigation }) => {
 
             <View className="mb-6">
               <Text className="text-lg font-bold text-gray-800 mb-3">Your Active Ticket</Text>
-              <ActiveTicketCard ticket={activeTicket} />
+              <ActiveTicketCard ticket={activeTicket} onUpdate={fetchData} />
             </View>
 
             <View style={styles.cardRow}>

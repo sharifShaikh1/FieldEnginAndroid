@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, ActivityIndicator } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import API_BASE_URL from '../config/apiConfig';
+import { API_BASE_URL } from '../config/apiConfig';
 
 
 
@@ -15,6 +15,7 @@ const RegisterScreen = ({ navigation }) => {
   const [aadhaarFile, setAadhaarFile] = useState(null);
   const [governmentIdFile, setGovernmentIdFile] = useState(null);
   const [addressProofFile, setAddressProofFile] = useState(null)
+  const [profilePicture, setProfilePicture] = useState(null);
   const [expertise, setExpertise] = useState([]);
   const [serviceAreas, setServiceAreas] = useState('');
   const [consent, setConsent] = useState(false);
@@ -29,6 +30,7 @@ const RegisterScreen = ({ navigation }) => {
     if (!aadhaarFile) return 'Aadhaar file is required';
     if (!governmentIdFile) return ' Government ID  is required';
     if (!addressProofFile) return 'Address Proof is required';
+    if (!profilePicture) return 'Profile Picture is required';
     if (expertise.length === 0) return 'Select at least one expertise';
     if (!serviceAreas) return 'Service Areas are required';
     return null;
@@ -91,6 +93,7 @@ const handleRegister = async () => {
   const aadhaarBase64 = await fileToBase64(aadhaarFile.uri);
   const governmentIdBase64 = await fileToBase64(governmentIdFile.uri);
   const addressProofBase64 = await fileToBase64(addressProofFile.uri);
+  const profilePictureBase64 = await fileToBase64(profilePicture.uri);
 
     const data = {
       fullName,
@@ -101,7 +104,8 @@ const handleRegister = async () => {
       serviceAreas,
       aadhaarFile: aadhaarBase64,
       governmentIdFile: governmentIdBase64,
-      addressProofFile: addressProofBase64
+      addressProofFile: addressProofBase64,
+      profilePicture: profilePictureBase64
     };
 
     
@@ -202,6 +206,14 @@ const handleRegister = async () => {
             >
               <Text className="text-white">
                 {addressProofFile ? addressProofFile.name : 'Upload Adress Proof (electricity bill, etc.)'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="border border-gray-500 rounded-md p-3 mb-3 bg-gray-700"
+              onPress={() => pickDocument(setProfilePicture)}
+            >
+              <Text className="text-white">
+                {profilePicture ? profilePicture.name : 'Upload Profile Picture (PNG/JPEG)'}
               </Text>
             </TouchableOpacity>
             <Text className="text-base font-semibold text-white mb-2">Expertise</Text>
